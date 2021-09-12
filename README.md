@@ -1,2 +1,5 @@
-# ui_api_autotest
-project for ui autotests and api autotests
+Tests for  opencart and api https://dog.ceo/api
+
+1. git clone project
+
+2. docker-compose -up
