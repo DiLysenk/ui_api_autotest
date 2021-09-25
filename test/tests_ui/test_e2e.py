@@ -1,5 +1,5 @@
 from pageobject.register_page import RegisterPage
-from pageobject.admin_page import AdminPage
+from pageobject.admin_page import AdminPage, CssAdminPage
 from pageobject.login_page import LoginAdminPage
 from pageobject.main_page import MainPage
 import pytest
@@ -29,7 +29,7 @@ class TestOpenCart:
             login_admin()
         AdminPage(browser).go_to_Products() \
             .add_product(name)
-        assert LoginAdminPage(browser).verify_element_visible_by_text(name), f"не найден товар{name}"
+        assert LoginAdminPage(browser).is_visible_by_text(name), f"не найден товар{name}"
 
     @allure.description("""Проверка удаление товара с первой строчки""")
     @allure.title('тест удаление товара')
@@ -40,7 +40,7 @@ class TestOpenCart:
         AdminPage(browser).go_to_Products() \
             .select_product() \
             .delete_product()
-        assert AdminPage(browser).verify_element_presence(AdminPage.SUCCESS_DELETE), "товар не удалён"
+        assert AdminPage(browser).is_presence(CssAdminPage.SUCCESS_DELETE), "товар не удалён"
 
     @allure.description("""Проверка изменение валюты на главной странице""")
     @allure.title('тест изменение валюты')
@@ -48,7 +48,7 @@ class TestOpenCart:
         MainPage(browser).\
             open_page_by_url(MainPage.OpenCArt).\
             change_currency()
-        assert MainPage(browser).verify_element_visible_by_text('£'), "валюта не переведена"
+        assert MainPage(browser).is_visible_by_text('£'), "валюта не переведена"
 
 
     @allure.description("""Проверка изменение валюты на главной странице""")
@@ -58,6 +58,6 @@ class TestOpenCart:
         MainPage(browser).\
             open_page_by_url(MainPage.OpenCArt).\
             change_currency()
-        assert MainPage(browser).verify_element_visible_by_text('₽'), "не должно быть такой валюты"
+        assert MainPage(browser).is_visible_by_text('₽'), "не должно быть такой валюты"
 
 

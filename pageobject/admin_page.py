@@ -1,8 +1,9 @@
 from selenium.webdriver.common.by import By
-from .base_page import BasePage
+from pageobject.base_page import BasePage
+from enum import Enum
 
 
-class AdminPage(BasePage):
+class CssAdminPage(Enum):
     CATALOG = (By.CSS_SELECTOR, '[data-toggle="collapse"]')
     PRODUCTS = (By.CSS_SELECTOR, '.collapse.in li + li a')
     ADD_NEW = (By.CSS_SELECTOR, '[data-original-title="Add New"]')
@@ -15,25 +16,28 @@ class AdminPage(BasePage):
     TABLE = (By.CSS_SELECTOR, '.table.table-bordered.table-hover')
     SUCCESS_DELETE = (By.CSS_SELECTOR, '.alert.alert-success.alert-dismissible')
 
+
+class AdminPage(BasePage):
+
     def go_to_Products(self):
-        self.click_element(self.verify_element_clickable(self.CATALOG))
-        self.click_element(self.verify_element_clickable(self.PRODUCTS))
+        self.click_locator(CssAdminPage.CATALOG)
+        self.click_locator(CssAdminPage.PRODUCTS)
         return self
 
     def add_product(self, model):
-        self.click_element(self.verify_element_clickable(self.ADD_NEW))
-        self.enter_keys(self.verify_element_visible(self.PRODUCT_NAME), model)
-        self.enter_keys(self.verify_element_visible(self.META_TAG_TITLE), model)
-        self.click_element(self.verify_link_text_visible('Data'))
-        self.enter_keys(self.verify_element_visible(self.MODEL), model)
-        self.click_element(self.verify_element_clickable(self.SAVE))
+        self.click_locator(CssAdminPage.ADD_NEW)
+        self.clear_and_send_keys(self.is_visible(CssAdminPage.PRODUCT_NAME), model)
+        self.clear_and_send_keys(self.is_visible(CssAdminPage.META_TAG_TITLE), model)
+        self.click_element(self.is_visible_by_link_text('Data'))
+        self.clear_and_send_keys(self.is_visible(CssAdminPage.MODEL), model)
+        self.click_locator(CssAdminPage.SAVE)
         return self
 
     def select_product(self):
-        self.click_inside_element(self.verify_element_visible(self.TABLE), self.SELECT_PRODUCT, 2)
+        self.click_nth_child(self.is_visible(CssAdminPage.TABLE), CssAdminPage.SELECT_PRODUCT, 2)
         return self
 
     def delete_product(self):
-        self.click_element(self.verify_element_visible(self.DELETE))
+        self.click_locator(CssAdminPage.DELETE)
         alert = self.browser.switch_to.alert
         alert.accept()

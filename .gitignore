@@ -5,4 +5,8 @@
 **__pycache__/
 **allure-report/
 allure/allure-results/
+shm.py
+**allure
+**logs
+
 

@@ -1,22 +1,13 @@
 import pytest
 import logging
 import allure
-import time
 from selenium import webdriver
 from config_parser import ConfigParser
-import requests
-import os
-from requests.exceptions import ConnectionError
-
-
+from helper import *
 
 config = ConfigParser()
-try:
-    os.mkdir('logs')
-    os.mkdir('allure')
-except FileExistsError:
-    print('папка создана всё ок')
-
+create_dir_logs()
+create_dir_allure()
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filemode='w',
                     level=logging.INFO, filename='logs/selenium.log')
@@ -25,18 +16,6 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 with open("test/test_api/end_points", 'r') as params:
     list_params = params.readlines()
     list_endpoints = [i.strip('\n') for i in list_params]
-
-for i in range(10):
-    i += 1
-    time.sleep(15)
-    try:
-        var = requests.get('http://172.17.0.1:7070').status_code
-        break
-    except ConnectionError:
-        print("сервер c opencart еще не поднялся")
-        pass
-        if i == 10:
-            raise AssertionError("сервер c opencart не поднялся, попробуйте запустить еще раз")
 
 
 def pytest_addoption(parser):
@@ -62,14 +41,15 @@ def browser(request):
             command_executor=f'http://172.17.0.1:4444//wd/hub',
             desired_capabilities=caps
         )
+        wait_server()
         browser.maximize_window()
-        browser.get(config.USER_FRONT)
+        browser.get(config.ADMIN_FRONT)
     elif headless == True:
         options = webdriver.ChromeOptions()
         options.headless = request.config.getoption("--headless")
         browser = webdriver.Chrome(options=options)
         browser.maximize_window()
-        browser.get(config.USER_FRONT)
+        browser.get(config.ADMIN_FRONT)
     else:
         browser = webdriver.Chrome()
         browser.maximize_window()
@@ -97,6 +77,7 @@ def loging(request, browser):
         logger.info(f"===> Test finished name, test is {test_name}")
 
     request.addfinalizer(fin)
+
 
 @pytest.fixture(name="end_point", params=list_endpoints)
 def get_end_point(request):
