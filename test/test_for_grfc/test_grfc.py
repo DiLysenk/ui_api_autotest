@@ -1,9 +1,8 @@
-from pageobject.grfc import GRFC
+from pageobject.grfc_page import GRFC
 
 
 def test_action(browser):
     page = GRFC(browser)
-
     page.open_page()
     page.click_find()
     page.input_in_find('radio')

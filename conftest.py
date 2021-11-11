@@ -3,7 +3,9 @@ import logging
 import allure
 from selenium import webdriver
 from config_parser import ConfigParser
-from helper import *
+from helper import wait_server, create_dir_logs, create_dir_allure
+from selenium.common.exceptions import WebDriverException
+import requests
 
 config = ConfigParser()
 create_dir_logs()
@@ -12,16 +14,15 @@ create_dir_allure()
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filemode='w',
                     level=logging.INFO, filename='logs/selenium.log')
 
-
 with open("test/test_api/end_points", 'r') as params:
     list_params = params.readlines()
     list_endpoints = [i.strip('\n') for i in list_params]
 
 
 def pytest_addoption(parser):
-    parser.addoption("--browser", action="store", default="chrome")
+    parser.addoption("--browser", action="store_true", default="chrome")
     parser.addoption('--headless', action="store_true", help="Run headless")
-    parser.addoption('--executor', action="store")
+    parser.addoption('--executor', action="store_true")
     parser.addoption('--bversion', action="store", default="91.0", help="version browser")
 
 
@@ -31,27 +32,31 @@ def browser(request):
     executor = request.config.getoption("--executor")
     headless = request.config.getoption("--headless")
     bversion = request.config.getoption("--bversion")
-    if executor != None:
+    wait_server()
+    if executor:
         caps = {
             "browserName": browser,
             "browserVersion": bversion,
             'goog:chromeOptions': {}
         }
         browser = webdriver.Remote(
-            command_executor=f'http://172.17.0.1:4444//wd/hub',
+            command_executor=f'http://{config.IP_DOCKER}:4444//wd/hub',
             desired_capabilities=caps
         )
-        wait_server()
         browser.maximize_window()
-        browser.get(config.ADMIN_FRONT)
-    elif headless == True:
+        browser.get(f'http://{config.IP_DOCKER}:7070')
+    elif headless:
         options = webdriver.ChromeOptions()
         options.headless = request.config.getoption("--headless")
         browser = webdriver.Chrome(options=options)
         browser.maximize_window()
-        browser.get(config.ADMIN_FRONT)
+        browser.get(f'http://{config.IP_DOCKER}:7070')
     else:
-        browser = webdriver.Chrome()
+        for chrome in (webdriver.Chrome(),  webdriver.Chrome('C:\chromedriver\chromedriver.exe')):
+            try:
+                browser = chrome
+            except WebDriverException:
+                raise AssertionError('не найден вебдрайвер')
         browser.maximize_window()
 
     def fin():
@@ -62,7 +67,7 @@ def browser(request):
 
 
 @pytest.fixture(scope='function')
-def loging(request, browser):
+def log_fixture(request, browser):
     logger = logging.getLogger('BrowserLogger')
     test_name = request.node.name
 

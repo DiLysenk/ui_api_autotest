@@ -13,7 +13,7 @@ class CssLoginAdminPage(Enum):
 
 
 class LoginAdminPage(BasePage):
-    ADMIN_PAGE = 'http://172.17.0.1:7070/admin/'
+    ADMIN_PAGE = f'http://{config.IP_DOCKER}:7070/admin/'
 
     def login_admin(self):
         self.clear_and_send_keys(self.is_visible(CssLoginAdminPage.USERNAME_ADMIN), config.LOGIN)

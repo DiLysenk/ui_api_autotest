@@ -8,5 +8,4 @@ allure/allure-results/
 shm.py
 **allure
 **logs
-
-
+/env/

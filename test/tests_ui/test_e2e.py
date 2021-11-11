@@ -8,13 +8,14 @@ from faker import Faker
 
 myFactory = Faker()
 
-@pytest.mark.usefixtures('loging')
+@pytest.mark.usefixtures('log_fixture')
 class TestOpenCart:
     @allure.description("""Проверка согдания пользователя""")
     @allure.title('тест создание пользоватиеля')
     def test_registration(self, browser):
-        RegisterPage(browser). \
-            open_page_by_url(RegisterPage.URL_REGISTER). \
+        p = RegisterPage(browser)
+        p. \
+            open_page_by_url(p.URL_REGISTER). \
             fill_form(myFactory.name(), myFactory.email()). \
             agree_policy(). \
             click_continue()
@@ -24,12 +25,14 @@ class TestOpenCart:
     @allure.title('тест новго товара')
     def test_add_new_item(self, browser):
         name = myFactory.color()
-        LoginAdminPage(browser).\
-            open_page_by_url(LoginAdminPage.ADMIN_PAGE).\
+        p = LoginAdminPage(browser)
+        p.\
+            open_page_by_url(p.ADMIN_PAGE).\
             login_admin()
-        AdminPage(browser).go_to_Products() \
+        AdminPage(browser)\
+            .go_to_Products() \
             .add_product(name)
-        assert LoginAdminPage(browser).is_visible_by_text(name), f"не найден товар{name}"
+        assert p.is_visible_by_text(name), f"не найден товар{name}"
 
     @allure.description("""Проверка удаление товара с первой строчки""")
     @allure.title('тест удаление товара')
@@ -55,9 +58,10 @@ class TestOpenCart:
     @allure.title('тест изменение валюты')
     @pytest.mark.xfail
     def test_switch_currency_fail(self, browser):
-        MainPage(browser).\
-            open_page_by_url(MainPage.OpenCArt).\
+        p = MainPage(browser)
+        p.\
+            open_page_by_url(p.OpenCArt).\
             change_currency()
-        assert MainPage(browser).is_visible_by_text('₽'), "не должно быть такой валюты"
+        assert p.is_visible_by_text('₽'), "не должно быть такой валюты"
 
 

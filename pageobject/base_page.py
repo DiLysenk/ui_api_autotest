@@ -51,6 +51,8 @@ class BasePage:  # базовый класс для PageObject
 
     def is_visible(self, locator):
         """метод для верификации "видимого" элемента на странице с помощью селектора"""
+
+
         try:
             self.is_page_loaded()
             element = self.wait.until(ec.visibility_of_element_located(locator.value))

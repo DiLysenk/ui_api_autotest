@@ -1,6 +1,9 @@
-from .base_page import BasePage
+from pageobject.base_page import BasePage
 from selenium.webdriver.common.by import By
 from enum import Enum
+from config_parser import ConfigParser
+
+config = ConfigParser()
 
 
 class CssRegisterPage(Enum):
@@ -15,7 +18,7 @@ class CssRegisterPage(Enum):
 
 
 class RegisterPage(BasePage):
-    URL_REGISTER = 'http://172.17.0.1:7070/index.php?route=account/register'
+    URL_REGISTER = f'http://{config.IP_DOCKER}:7070/index.php?route=account/register'
 
     def fill_form(self, name, email):
         self.clear_and_send_keys(self.is_visible(CssRegisterPage.FIRST_NAME), name)

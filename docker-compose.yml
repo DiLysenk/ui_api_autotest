@@ -15,7 +15,8 @@ services:
       - selenoid
     ports:
       - "8080:8080"
-    command: ["--selenoid-uri", "http://selenoid:4444"]
+    command: ["--selenoid-uri", "http://172.28.240.1:4444"]
+   # command: ["--selenoid-uri",  "http://selenoid:4444"] for linux docker
   mariadb:
     image: docker.io/bitnami/mariadb:10.3
     environment:
@@ -30,7 +31,8 @@ services:
       - '7070:7070'
       - '443:8443'
     environment:
-      - OPENCART_HOST=172.17.0.1:7070
+      - OPENCART_HOST=172.28.240.1:7070  #  for windows docker
+    #  - OPENCART_HOST=172.17.0.1:7070  #  for linux docker
       - APACHE_HTTP_PORT_NUMBER=7070
       - OPENCART_DATABASE_HOST=mariadb
       - OPENCART_DATABASE_PORT_NUMBER=3306
@@ -42,15 +44,15 @@ services:
       - 'opencart_storage_data:/bitnami/opencart_storage/'
     depends_on:
       - mariadb
-  jenkins:
-    image: docker.io/bitnami/jenkins:2
-    ports:
-      - '9090:9090'
-    environment:
-      - JENKINS_HTTP_PORT_NUMBER=9090
-      - JENKINS_PASSWORD=bitnami
-    volumes:
-      - 'jenkins_data:/bitnami/jenkins'
+#  jenkins:
+#    image: docker.io/bitnami/jenkins:2
+#    ports:
+#      - '9090:9090'
+#    environment:
+#      - JENKINS_HTTP_PORT_NUMBER=9090
+#      - JENKINS_PASSWORD=bitnami
+#    volumes:
+#      - 'jenkins_data:/bitnami/jenkins'
   tests:
     build:
       context: .
@@ -62,8 +64,8 @@ services:
       - opencart
 
 volumes:
-  jenkins_data:
-    driver: local
+#  jenkins_data:
+#    driver: local
   mariadb_data:
     driver: local
   opencart_data:
