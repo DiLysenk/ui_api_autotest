@@ -5,6 +5,7 @@ import os
 from requests.exceptions import ConnectionError
 from config_parser import ConfigParser
 import logging
+import enum
 
 config = ConfigParser()
 RETRY = 10
@@ -35,4 +36,10 @@ def create_dir_allure():
         os.mkdir('allure')
     except FileExistsError:
         print('папка создана всё ок')
+
+
+def selector(locator):
+    if locator is enum.EnumMeta:
+        return locator.val
+    return locator
 

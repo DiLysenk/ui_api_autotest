@@ -2,12 +2,11 @@
 import logging
 import time
 from time import sleep
-from selenium.common.exceptions import TimeoutException, ElementClickInterceptedException, \
-    StaleElementReferenceException
+from selenium.common.exceptions import TimeoutException, StaleElementReferenceException
 from enum import Enum
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 
@@ -21,28 +20,33 @@ class CssBasePage(Enum):
 
 class BasePage:  # базовый класс для PageObject
 
-    def __init__(self, browser, wait=10):  # инициализация браузера
+    def __init__(self, browser, waiting=10):  # инициализация браузера
         self.browser = browser
-        self.wait = WebDriverWait(self.browser, wait)
+        self.wait = WebDriverWait(self.browser, waiting)
         self.logger = logging.getLogger(type(self).__name__)
+
+    def __repr__(self):
+        return 'базовые методы'
+
+    def is_locator(self, locator):
+        if isinstance(locator, Enum):
+            return locator
+        else:
+            class NewLocator:
+                value = (By.CSS_SELECTOR, locator)
+                name = locator
+            return NewLocator()
 
     def is_page_loaded(self):
         self.wait.until(lambda driver: self.browser.execute_script('return document.readyState') == 'complete')
-        self.is_not_visible(CssBasePage.LOADING_TAG.value)
-        self.is_not_visible(CssBasePage.LOADING_TAG.value)
-
-
-    def is_selected(self, element):
-        """метод для проверки -выделен ли элемент? на странице  """
-        if 'selected' not in element.get_attribute("class"):
-            raise AssertionError("ошибка, элемент не был выделен в таблице ")
+        self.is_not_visible(CssBasePage.LOADING_TAG)
 
     def is_visible_by_link_text(self, text):
         """метод для верификации элемента в котором содержится ссылка для перехода (за это отвечает аттрибут href=)
         для нахождения элемента достаточно указать название элемента"""
         try:
             self.is_page_loaded()
-            element = self.wait.until(ec.visibility_of_element_located((By.LINK_TEXT, text)))
+            element = self.wait.until(EC.visibility_of_element_located((By.LINK_TEXT, text)))
             self.logger.info(f'успешно найден элемент с текстом -- {text}')
             return element
         except TimeoutException:
@@ -51,12 +55,12 @@ class BasePage:  # базовый класс для PageObject
 
     def is_visible(self, locator):
         """метод для верификации "видимого" элемента на странице с помощью селектора"""
-
-
         try:
+            locator = self.is_locator(locator)
             self.is_page_loaded()
-            element = self.wait.until(ec.visibility_of_element_located(locator.value))
+            element = self.wait.until(EC.visibility_of_element_located(locator.value))
             self.logger.info(f'успешно найден элемент по локатору с локатором {locator.name}')
+            element.click_element = self.click_element
             return element
         except TimeoutException:
             self.logger.error(f'ошибка, не найден элемент по css {locator.name}')
@@ -66,9 +70,11 @@ class BasePage:  # базовый класс для PageObject
         """метод для верификации элемента на странице с помощью селектора
         (элемент может быть невидим на странице но он присутствует в DOM)"""
         try:
+            locator = self.is_locator(locator)
             self.is_page_loaded()
-            element = self.wait.until(ec.presence_of_element_located(locator.value))
+            element = self.wait.until(EC.presence_of_element_located(locator.value))
             self.logger.info(f'успешно найден элемент по локатору с локатором {locator.name}')
+
             return element
         except TimeoutException:
             self.logger.error(f'ошибка, не найден элемент по css  {locator.name}')
@@ -79,7 +85,7 @@ class BasePage:  # базовый класс для PageObject
         для нахождения элемента достаточно указать название элемента"""
         try:
             self.is_page_loaded()
-            element = self.wait.until(ec.visibility_of_element_located((By.XPATH, f'//*[text()="{text}"]')))
+            element = self.wait.until(EC.visibility_of_element_located((By.XPATH, f'//*[text()="{text}"]')))
             self.logger.info(f'найден элемент с текстом {text}')
             return element
         except TimeoutException:
@@ -91,12 +97,13 @@ class BasePage:  # базовый класс для PageObject
         """метод для верификации элементОВ по селектору,
         quantity: это предпологаемое минимальное количество которое он должен найти"""
         try:
+            locator = self.is_locator(locator)
             self.is_page_loaded()
-            if len(self.wait.until(ec.visibility_of_all_elements_located(locator.value))) >= quantity:
-                return self.wait.until(ec.visibility_of_all_elements_located(locator.value))
+            if len(self.wait.until(EC.visibility_of_all_elements_located(locator.value))) >= quantity:
+                return self.wait.until(EC.visibility_of_all_elements_located(locator.value))
             else:
                 self.wait_time(3)
-                return self.wait.until(ec.visibility_of_all_elements_located(locator.value))
+                return self.wait.until(EC.visibility_of_all_elements_located(locator.value))
         except TimeoutException:
             self.logger.error(f'Ошибка, элемент не найден {locator.name}')
             raise AssertionError(f'Ошибка, элемент не найден {locator.name}')
@@ -105,12 +112,13 @@ class BasePage:  # базовый класс для PageObject
         """метод для верификации элементОВ по селектору,
         quantity: это предполагаемое минимальное количество которое он должен найти"""
         try:
+            locator = self.is_locator(locator)
             self.is_page_loaded()
-            if len(self.wait.until(ec.presence_of_all_elements_located(locator.value))) >= quantity:
-                return self.wait.until(ec.presence_of_all_elements_located(locator.value))
+            if len(self.wait.until(EC.presence_of_all_elements_located(locator.value))) >= quantity:
+                return self.wait.until(EC.presence_of_all_elements_located(locator.value))
             else:
                 self.wait_time(3)
-                return self.wait.until(ec.presence_of_all_elements_located(locator.value))
+                return self.wait.until(EC.presence_of_all_elements_located(locator.value))
         except TimeoutException:
             self.logger.error(f'Ошибка, элемент не найден {locator.name}')
             raise AssertionError(f'Ошибка, элемент не найден {locator.name}')
@@ -118,8 +126,9 @@ class BasePage:  # базовый класс для PageObject
     def is_clickable(self, locator):
         """метод для верификации элемента с помощью CSS на кликабельность"""
         try:
+            locator = self.is_locator(locator)
             self.is_page_loaded()
-            element = self.wait.until(ec.element_to_be_clickable(locator.value))
+            element = self.wait.until(EC.element_to_be_clickable(locator.value))
             self.logger.info(f'найден кликабельный элемент {locator.name}')
             return element
         except TimeoutException:
@@ -128,14 +137,15 @@ class BasePage:  # базовый класс для PageObject
 
     def is_not_visible(self, locator):
         try:
-            return self.wait.until(ec.invisibility_of_element(locator))
+            locator = self.is_locator(locator)
+            return self.wait.until(EC.invisibility_of_element(locator.value))
         except TimeoutException:
             self.logger.error(f'Ошибка, элемент найден и не исчезает {locator.name}')
             raise AssertionError(f'Ошибка, элемент не исчез с экрана {locator.name}')
 
     def verify_url(self, url):
         try:
-            return self.wait.until(ec.url_to_be(url))
+            return self.wait.until(EC.url_to_be(url))
         except TimeoutException:
             self.logger.error(f'Ошибка, адрес странички не  {url}')
             raise AssertionError(f'Ошибка, адрес странички не  {url}')
@@ -144,34 +154,35 @@ class BasePage:  # базовый класс для PageObject
         """клик с помощью экшон чейнс"""
         ActionChains(self.browser).pause(0.1).move_to_element(element).click().perform()
 
+
     def click_element(self, element):
         for i in range(CLICK_RETRY):
             try:
-                element.is_enabled()
                 element.click()
                 self.logger.info('клик по элементу')
                 time.sleep(i)
                 break
             except StaleElementReferenceException:
                 if i == CLICK_RETRY - 1:
-                    raise AssertionError(f'Ошибка, не кликнуть по элементу')
+                    raise AssertionError('Ошибка, не кликнуть по элементу')
 
     def click_locator(self, locator):
+        locator_name = self.is_locator(locator).name
         for i in range(CLICK_RETRY):
             try:
-                element = self.is_clickable(locator)
+                element = self.is_visible(locator)
                 self.scroll_to_element(element)
-                element = self.wait.until(ec.element_to_be_clickable(locator.value))
                 element.click()
-                self.logger.info(f'клик по элементу {locator.name}')
+                self.logger.info(f'клик по элементу {locator_name}')
                 return
             except StaleElementReferenceException:
                 if i == CLICK_RETRY - 1:
-                    raise
+                    raise AssertionError(f'Ошибка, не кликнуть по элементу, {locator_name}')
 
     def click_nth_child(self, element, locator, index: int = 0):
         """ в найденном элементе (например таблице) находит элементы с одинаковым css_selector
          и кликает по порядковому номеру (index) """
+        locator = self.is_locator(locator)
         element_child = element.find_elements(*locator.value)[index]
         self.click_element(element_child)
         self.logger.info(f'Клик в элемент по счёту {index} с локатором {locator.name}')
@@ -195,19 +206,17 @@ class BasePage:  # базовый класс для PageObject
     def get_attribute_element(self, element, attribute):
         return element.get_attribute(attribute)
 
-    # sleep сделан для того что бы не было разлогиневания
     def refresh_browser(self):
-        self.wait_time(1)
         self.browser.refresh()
         self.is_page_loaded()
-        self.wait_time(1)
         return self
 
     def get_propety_text_of_element(self, element):
         return element.get_property('textContent')
 
     def get_text_of_element(self, locator):
-        return self.is_visible(locator).text
+        locator = self.is_locator(locator)
+        return self.is_visible(locator.value).text
 
     def get_text_of_element_by_text_link(self, text_link):
         return self.is_visible_by_link_text(text_link).text
@@ -219,7 +228,7 @@ class BasePage:  # базовый класс для PageObject
         sleep(time)
         return self
 
-    def click_by_linktext(self, linktext: str):
+    def click_by_link_text(self, linktext: str):
         self.click_element(self.is_visible_by_link_text(linktext))
         self.is_not_visible(CssBasePage.LOADING_TAG.value)
         return self
@@ -227,7 +236,7 @@ class BasePage:  # базовый класс для PageObject
     def open_page_by_url(self, url):
         self.browser.get(url)
         self.wait.until(lambda driver: self.browser.execute_script('return document.readyState') == 'complete')
-        self.is_not_visible(CssBasePage.LOADING_TAG.value)
+        self.is_not_visible(CssBasePage.LOADING_TAG)
         return self
 
     def save_screenshot(self, request):
@@ -254,45 +263,3 @@ class BasePage:  # базовый класс для PageObject
     def delete_text_in_element(self, element):
         element.send_keys(Keys.CONTROL + Keys.BACKSPACE)
         return self
-
-    def click_with_selector(self, locator, verify="visible"):
-        """ выполняет клик по элементу с дополнительным указанием верификации элемента
-        если верификация выполняется по text или link_text, то вместо локатора подставляется текст элемента
-        """
-        if verify == "visible":
-            self.click_element(self.is_visible(locator))
-            return self
-        elif verify == "presence":
-            self.click_element(self.is_presence(locator))
-            return self
-        elif verify == "text":
-            text = locator
-            self.click_element(self.is_visible_by_text(text))
-            return self
-        elif verify == "link_text":
-            link_text = locator
-            self.click_element(self.is_visible_by_link_text(link_text))
-            return self
-        else:
-            raise AssertionError("Ошибка, нужно выбрать метод верификации см. подсказку к методу")
-
-    def enter_keys_with_selector(self, input_text, locator, verify="visible"):
-        """ выполняет ввод текста в элемент с дополнительным указанием верификации элемента
-        если верификация выполняется по text или link_text, то вместо локатора подставляется текст элемента
-        """
-        if verify == "visible":
-            self.clear_and_send_keys(self.is_visible(locator), input_text)
-            return self
-        elif verify == "presence":
-            self.clear_and_send_keys(self.is_presence(locator), input_text)
-            return self
-        elif verify == "text":
-            text = locator
-            self.clear_and_send_keys(self.is_visible_by_text(text), input_text)
-            return self
-        elif verify == "link_text":
-            link_text = locator
-            self.clear_and_send_keys(self.is_visible_by_link_text(link_text), input_text)
-            return self
-        else:
-            raise AssertionError("Ошибка, нужно выбрать метод верификации см. подсказку к методу")

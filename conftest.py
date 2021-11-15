@@ -52,11 +52,9 @@ def browser(request):
         browser.maximize_window()
         browser.get(f'http://{config.IP_DOCKER}:7070')
     else:
-        for chrome in (webdriver.Chrome(),  webdriver.Chrome('C:\chromedriver\chromedriver.exe')):
-            try:
-                browser = chrome
-            except WebDriverException:
-                raise AssertionError('не найден вебдрайвер')
+        webdriver.Chrome()
+        browser = webdriver.Chrome()
+        # browser = webdriver.Chrome('C:\chromedriver\chromedriver.exe')
         browser.maximize_window()
 
     def fin():

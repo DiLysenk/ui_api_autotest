@@ -15,6 +15,12 @@ class MainPage(BasePage):
     OpenCArt = f'http://{config.IP_DOCKER}:7070'
     POUND_STERLING = "£ Pound Sterling"
 
+    def __repr__(self):
+        return ''
+
+    def navigate(self):
+        self.open_page_by_url(self.OpenCArt)
+
     def change_currency(self):
         self.click_locator(CssMainPage.CURRENCY)
         self.click_element(self.is_visible_by_text(self.POUND_STERLING))
