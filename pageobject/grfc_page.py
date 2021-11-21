@@ -1,3 +1,5 @@
+import allure
+
 from pageobject.base_page import BasePage
 from selenium.webdriver.common.by import By
 from enum import Enum
@@ -14,13 +16,17 @@ class GRFC(BasePage):
     url = 'https://www.grfc.ru/grfc/'
 
     def open_page(self):
-        self.open_page_by_url(self.url)
+        with allure.step('open page'):
+            self.open_page_by_url(self.url)
 
     def click_find(self):
-        self.click_element(self.is_visible(CssGRFC.BTN_FIND))
+        with allure.step('click in find'):
+            self.click_element(self.is_visible(CssGRFC.BTN_FIND))
 
     def input_in_find(self, text):
-        self.clear_and_send_keys(self.is_visible(CssGRFC.FIELD_FIND), text)
+        with allure.step('input at find field'):
+            self.clear_and_send_keys(self.is_visible(CssGRFC.FIELD_FIND), text)
 
     def push_enter(self):
-        self.is_visible(CssGRFC.FIELD_FIND).send_keys('Enter')
+        with allure.step('push enter'):
+            self.is_visible(CssGRFC.FIELD_FIND).send_keys('Enter')

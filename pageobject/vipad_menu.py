@@ -12,7 +12,6 @@ class VipadMenu(BasePage):
         text_options = [i.text for i in options]
         return text_options
 
-
     def click_in_option(self, locator, text_option):
         self.grab_varians(locator)
 
