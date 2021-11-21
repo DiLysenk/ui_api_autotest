@@ -5,8 +5,9 @@ from pageobject.main_page import MainPage
 import pytest
 import allure
 from faker import Faker
-
 myFactory = Faker()
+
+
 
 @pytest.mark.usefixtures('log_fixture')
 class TestOpenCart:

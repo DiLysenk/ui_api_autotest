@@ -14,7 +14,7 @@ create_dir_allure()
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filemode='w',
                     level=logging.INFO, filename='logs/selenium.log')
 
-with open("test/test_api/end_points", 'r') as params:
+with open("tests/test_api/end_points", 'r') as params:
     list_params = params.readlines()
     list_endpoints = [i.strip('\n') for i in list_params]
 
@@ -90,3 +90,8 @@ def get_end_point(request):
 @pytest.fixture
 def response_get(end_point):
     return requests.get(end_point)
+
+
+@pytest.fixture
+def base_page(driver):
+    return BasePage(driver=driver)
