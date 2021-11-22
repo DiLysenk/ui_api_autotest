@@ -217,7 +217,7 @@ class BasePage:  # базовый класс для PageObject
         """ввод в поле текста, после очистки его """
         for i in range(CLICK_RETRY):
             try:
-                locator = self.is_locator(locator).value
+                locator = self.is_locator(locator)
                 self.scroll_to_element(self.is_visible(locator))
                 self.is_visible(locator).clear()
                 self.is_visible(locator).send_keys(text)
