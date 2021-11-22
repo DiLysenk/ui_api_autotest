@@ -12,7 +12,7 @@ create_dir_logs()
 create_dir_allure()
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filemode='w',
-                    level=logging.INFO, filename='logs/selenium.log')
+                    level=logging.INFO, filename='_logs/selenium.log')
 
 with open("test/test_api/end_points", 'r') as params:
     list_params = params.readlines()

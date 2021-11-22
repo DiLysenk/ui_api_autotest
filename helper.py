@@ -26,14 +26,14 @@ def wait_server():
 
 def create_dir_logs():
     try:
-        os.mkdir('logs')
+        os.mkdir('_logs')
     except FileExistsError:
         print('папка создана всё ок')
 
 
 def create_dir_allure():
     try:
-        os.mkdir('allure')
+        os.mkdir('_allure')
     except FileExistsError:
         print('папка создана всё ок')
 

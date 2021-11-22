@@ -37,12 +37,12 @@ class AdminPage(BasePage):
             return self
 
     def select_product(self):
-        with allure.step('choose product'):
+        with allure.step('выбор продукта'):
             self.click_nth_child(self.is_visible(CssAdminPage.TABLE), CssAdminPage.SELECT_PRODUCT, 2)
             return self
 
     def delete_product(self):
-        with allure.step('delete product'):
+        with allure.step('удалить продукт'):
             self.click_locator(CssAdminPage.DELETE)
             alert = self.browser.switch_to.alert
             alert.accept()

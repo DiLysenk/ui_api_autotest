@@ -26,9 +26,10 @@ class BasePage:  # базовый класс для PageObject
         self.logger = logging.getLogger(type(self).__name__)
 
     def __repr__(self):
-        return 'базовые методы'
+        return 'base_methods'
 
     def is_locator(self, locator):
+        '''приводит локатор к виду Enum'''
         if isinstance(locator, Enum):
             return locator
         else:
@@ -188,12 +189,27 @@ class BasePage:  # базовый класс для PageObject
         self.logger.info(f'Клик в элемент по счёту {index} с локатором {locator.name}')
         return self
 
+    def fill(self, locator, text):
+        """ввод в поле текста, после очистки его """
+        for i in range(CLICK_RETRY):
+            try:
+                locator = self.is_locator(locator).value
+                self.scroll_to_element(self.is_visible(locator))
+                self.is_visible(locator).clear()
+                self.is_visible(locator).send_keys(text)
+                self.logger.info(f'заполняем поле текстом -- {text}')
+                return self
+            except StaleElementReferenceException:
+                if i == CLICK_RETRY - 1:
+                    raise AssertionError(f'Ошибка, не найден элемент, {locator.name}')
+
     def clear_and_send_keys(self, element, text):
         """ввод в поле текста, после очистки его """
         element.clear()
         element.send_keys(text)
         self.logger.info(f'заполняем поле текстом -- {text}')
         return self
+
 
     def send_keys_with_enter(self, element, text):
         """ввод в поле текста и последующее нажатие ENTER

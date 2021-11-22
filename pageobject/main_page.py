@@ -1,3 +1,5 @@
+import allure
+
 from .base_page import BasePage
 from config_parser import ConfigParser
 from selenium.webdriver.common.by import By
@@ -19,14 +21,17 @@ class MainPage(BasePage):
         return ''
 
     def navigate(self):
-        self.open_page_by_url(self.OpenCArt)
+        with allure.step(f'переход на страницу {self.OpenCArt}'):
+            self.open_page_by_url(self.OpenCArt)
 
     def change_currency(self):
-        self.click_locator(CssMainPage.CURRENCY)
-        self.click_element(self.is_visible_by_text(self.POUND_STERLING))
+        with allure.step('изменить валюту'):
+            self.click_locator(CssMainPage.CURRENCY)
+            self.click_element(self.is_visible_by_text(self.POUND_STERLING))
 
     def forward_to_register(self):
-        self.click_locator(CssMainPage.CABINET)
-        self.click_element(self.is_visible_by_text('Регистрация'))
+        with allure.step('перейти к регистрации'):
+            self.click_locator(CssMainPage.CABINET)
+            self.click_element(self.is_visible_by_text('Регистрация'))
 
 
