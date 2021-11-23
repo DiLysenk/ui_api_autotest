@@ -4,7 +4,6 @@ import allure
 from selenium import webdriver
 from config_parser import ConfigParser
 from helper import wait_server, create_dir_logs, create_dir_allure
-from selenium.common.exceptions import WebDriverException
 import requests
 
 config = ConfigParser()
