@@ -16,6 +16,7 @@ class CssMainPage(Enum):
 class MainPage(BasePage):
     OpenCArt = f'http://{config.IP_DOCKER}:7070'
     POUND_STERLING = "£ Pound Sterling"
+    TABLETS = ''
 
     def __repr__(self):
         return ''
@@ -34,4 +35,9 @@ class MainPage(BasePage):
             self.click_locator(CssMainPage.CABINET)
             self.click_element(self.is_visible_by_text('Регистрация'))
 
+
+    def choose_sort_by(self, value):
+        with allure.step(f'выбрать сортировку {value}'):
+            self.is_visible_by_text('Tablets').click()
+            self.choose(value)
 

@@ -256,7 +256,7 @@ class BasePage:  # базовый класс для PageObject
 
     def get_text_of_element(self, locator):
         locator = self.is_locator(locator)
-        return self.is_visible(locator.value).text
+        return self.is_visible(locator).text
 
     def get_text_of_element_by_text_link(self, text_link):
         return self.is_visible_by_link_text(text_link).text

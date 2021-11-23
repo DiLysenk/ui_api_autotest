@@ -1,7 +1,7 @@
 from base_page import BasePage
 
 
-class VipadMenu(BasePage):
+class VipadMenu():
 
     def click_menu(self, locator):
         self.click_locator(locator)

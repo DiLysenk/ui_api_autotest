@@ -9,3 +9,4 @@ shm.py
 **allure
 **logs
 /env/
+docker-compose.yaml

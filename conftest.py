@@ -24,6 +24,7 @@ def pytest_addoption(parser):
     parser.addoption('--headless', action="store_true", help="Run headless")
     parser.addoption('--executor', action="store_true")
     parser.addoption('--bversion', action="store", default="91.0", help="version browser")
+    parser.addoption('--system', action='store', default='ubuntu', help='if start on windows set win')
 
 
 @pytest.fixture(scope='session')
@@ -32,6 +33,7 @@ def browser(request):
     executor = request.config.getoption("--executor")
     headless = request.config.getoption("--headless")
     bversion = request.config.getoption("--bversion")
+    system = request.config.getoption("--system")
     wait_server()
     if executor:
         caps = {
@@ -53,8 +55,10 @@ def browser(request):
         browser.get(f'http://{config.IP_DOCKER}:7070')
     else:
         webdriver.Chrome()
-        browser = webdriver.Chrome()
-        # browser = webdriver.Chrome('C:\chromedriver\chromedriver.exe')
+        if system == 'win':
+            browser = webdriver.Chrome('C:\chromedriver\chromedriver.exe')
+        else:
+            browser = webdriver.Chrome()
         browser.maximize_window()
 
     def fin():
