@@ -33,7 +33,7 @@ def browser(request):
     headless = request.config.getoption("--headless")
     bversion = request.config.getoption("--bversion")
     system = request.config.getoption("--system")
-    wait_server()
+    # wait_server()
     if executor:
         caps = {
             "browserName": browser,
@@ -53,7 +53,6 @@ def browser(request):
         browser.maximize_window()
         browser.get(f'http://{config.IP_DOCKER}:7070')
     else:
-        webdriver.Chrome()
         if system == 'win':
             browser = webdriver.Chrome('C:\chromedriver\chromedriver.exe')
         else:
@@ -93,8 +92,3 @@ def get_end_point(request):
 @pytest.fixture
 def response_get(end_point):
     return requests.get(end_point)
-
-
-@pytest.fixture
-def base_page(driver):
-    return BasePage(driver=driver)

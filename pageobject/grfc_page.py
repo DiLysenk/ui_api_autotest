@@ -30,3 +30,6 @@ class GRFC(BasePage):
     def push_enter(self):
         with allure.step('push enter'):
             self.is_visible(CssGRFC.FIELD_FIND).send_keys('Enter')
+
+
+

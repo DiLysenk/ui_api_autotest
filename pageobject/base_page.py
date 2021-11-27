@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+import enum
 import logging
 import time
 from time import sleep
-from selenium.common.exceptions import TimeoutException, StaleElementReferenceException, ElementClickInterceptedException
+from selenium.common.exceptions import TimeoutException, StaleElementReferenceException, \
+    ElementClickInterceptedException
 from enum import Enum
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
@@ -11,8 +13,6 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 
 CLICK_RETRY = 3
-
-
 
 
 class CssBasePage(Enum):
@@ -35,10 +35,10 @@ class BasePage:  # базовый класс для PageObject
         if isinstance(locator, Enum):
             return locator
         else:
-            class NewLocator:
-                value = (By.CSS_SELECTOR, locator)
-                name = locator
-            return NewLocator()
+            class NewLocator(enum.Enum):
+                selector = (By.CSS_SELECTOR, locator)
+
+            return NewLocator.selector
 
     def is_page_loaded(self):
         self.wait.until(lambda driver: self.browser.execute_script('return document.readyState') == 'complete')
@@ -63,7 +63,6 @@ class BasePage:  # базовый класс для PageObject
                     self.logger.error(f'Ошибка, не найдена ссылка с текстом "{text}')
                     raise AssertionError(f'Ошибка, не найдена ссылка с текстом "{text}')
 
-
     def is_visible(self, locator):
         """верификация видимости элемента на странице с помощью локатора
 
@@ -81,7 +80,6 @@ class BasePage:  # базовый класс для PageObject
                 if i == CLICK_RETRY - 1:
                     self.logger.error(f'ошибка, не найден элемент по css {locator.name}')
                     raise AssertionError(f'ошибка, не найден элемент по css  {locator.name}')
-
 
     def is_presence(self, locator):
         """метод для верификации элемента на странице с помощью селектора
@@ -203,7 +201,6 @@ class BasePage:  # базовый класс для PageObject
                 if i == CLICK_RETRY - 1:
                     raise AssertionError(f'Ошибка, не кликнуть по элементу с локатором {locator.name}')
 
-
     def click_nth_child(self, element, locator, index: int = 0):
         """ в найденном элементе (например таблице) находит элементы с одинаковым css_selector
          и кликает по порядковому номеру (index) """
@@ -233,7 +230,6 @@ class BasePage:  # базовый класс для PageObject
         element.send_keys(text)
         self.logger.info(f'заполняем поле текстом -- {text}')
         return self
-
 
     def send_keys_with_enter(self, element, text):
         """ввод в поле текста и последующее нажатие ENTER

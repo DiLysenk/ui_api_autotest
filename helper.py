@@ -8,7 +8,7 @@ import logging
 import enum
 
 config = ConfigParser()
-RETRY = 10
+RETRY = 5
 
 
 def wait_server():
