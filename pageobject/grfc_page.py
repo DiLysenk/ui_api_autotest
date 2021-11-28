@@ -25,7 +25,7 @@ class GRFC(BasePage):
 
     def input_in_find(self, text):
         with allure.step('input at find field'):
-            self.clear_and_send_keys(self.is_visible(CssGRFC.FIELD_FIND), text)
+            self.fill_element(self.is_visible(CssGRFC.FIELD_FIND), text)
 
     def push_enter(self):
         with allure.step('push enter'):

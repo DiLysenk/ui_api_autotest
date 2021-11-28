@@ -20,6 +20,7 @@ class CssTMDB(Enum):
     LOG_SUCCESSFUL = (By.CSS_SELECTOR, )
     FILMS = (By.CSS_SELECTOR, '.content .dropdown_menu > li:nth-child(1)')
     POPULAR = (By.CSS_SELECTOR, '.content .dropdown_menu > li:nth-child(1) li:nth-child(1)')
+    SORT_RESULT_BY = (By.CSS_SELECTOR, 'div:nth-child(1) > div:nth-child(1) > div.filter > span > span')
 
 
 class TMDB(BasePage):
@@ -36,8 +37,16 @@ class TMDB(BasePage):
         self.click(CssTMDB.BTN_LOGIN)
 
     def naviate_to_pop(self):
+
         self.click(CssTMDB.FILMS)
         self.click(CssTMDB.POPULAR)
 
     def choose_by(self):
-        self.is_visible()
+        self.click(CssTMDB.SORT_RESULT_BY)
+
+
+    def choose_in_elements(self, locator, text):
+        element = self.is_visible(locator)
+        element.click()
+        element.find
+

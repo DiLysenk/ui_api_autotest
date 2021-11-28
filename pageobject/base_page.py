@@ -227,7 +227,7 @@ class BasePage:  # базовый класс для PageObject
                 if i == CLICK_RETRY - 1:
                     raise AssertionError(f'Ошибка, не найден элемент, {locator.name}')
 
-    def clear_and_send_keys(self, element, text):
+    def fill_element(self, element, text):
         """ввод в поле текста, после очистки его """
         element.clear()
         element.send_keys(text)

@@ -29,10 +29,10 @@ class AdminPage(BasePage):
     def add_product(self, model):
         with allure.step('Перейти на страницу добавления продукта и заполнить поля'):
             self.click(CssAdminPage.ADD_NEW)
-            self.clear_and_send_keys(self.is_visible(CssAdminPage.PRODUCT_NAME), model)
-            self.clear_and_send_keys(self.is_visible(CssAdminPage.META_TAG_TITLE), model)
+            self.fill_element(self.is_visible(CssAdminPage.PRODUCT_NAME), model)
+            self.fill_element(self.is_visible(CssAdminPage.META_TAG_TITLE), model)
             self.click_element(self.is_visible_by_link_text('Data'))
-            self.clear_and_send_keys(self.is_visible(CssAdminPage.MODEL), model)
+            self.fill_element(self.is_visible(CssAdminPage.MODEL), model)
             self.click(CssAdminPage.SAVE)
             return self
 

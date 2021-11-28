@@ -22,6 +22,6 @@ class LoginAdminPage(BasePage):
 
     def login_admin(self):
         with allure.step('Логинимся на странцу'):
-            self.clear_and_send_keys(self.is_visible(CssLoginAdminPage.USERNAME_ADMIN), config.LOGIN)
-            self.clear_and_send_keys(self.is_visible(CssLoginAdminPage.PASSWORD_ADMIN), config.PASSWORD)
+            self.fill_element(self.is_visible(CssLoginAdminPage.USERNAME_ADMIN), config.LOGIN)
+            self.fill_element(self.is_visible(CssLoginAdminPage.PASSWORD_ADMIN), config.PASSWORD)
             self.click(CssLoginAdminPage.LOGIN_BUTTON_ADMIN)
