@@ -16,6 +16,7 @@ CLICK_RETRY = 3
 
 
 class CssBasePage(Enum):
+
     LOADING_TAG = (By.CSS_SELECTOR, '.-loading.-active')  # селектор элемента загрузки
     MENU_LINK_TO_CONTENT_PAGE = (By.CSS_SELECTOR, '[href="/new/shows"]')  # кнопка видна из всех разделов
 
@@ -31,7 +32,8 @@ class BasePage:  # базовый класс для PageObject
         return 'base_methods'
 
     def is_locator(self, locator):
-        '''приводит локатор к виду Enum'''
+        """ приводит локатор к виду Enum """
+
         if isinstance(locator, Enum):
             return locator
         else:
@@ -79,7 +81,7 @@ class BasePage:  # базовый класс для PageObject
                 sleep(i)
                 if i == CLICK_RETRY - 1:
                     self.logger.error(f'ошибка, не найден элемент по css {locator.name}')
-                    raise AssertionError(f'ошибка, не найден элемент по css  {locator.name}')
+                    raise AssertionError(f'ошибка, не найден элемент по css {locator.name}')
 
     def is_presence(self, locator):
         """метод для верификации элемента на странице с помощью селектора
@@ -185,7 +187,7 @@ class BasePage:  # базовый класс для PageObject
                 if i == CLICK_RETRY - 1:
                     raise AssertionError('Ошибка, не кликнуть по элементу')
 
-    def click_locator(self, locator):
+    def click(self, locator):
         """ Кликает по элементу
 
         locator: вида (By, 'locator')
@@ -193,7 +195,7 @@ class BasePage:  # базовый класс для PageObject
         """
         for i in range(CLICK_RETRY, 0, -1):
             try:
-                self.wait.until(EC.element_to_be_clickable(locator.value)).click()
+                self.is_visible(locator).click()
                 self.logger.info(f'клик по элементу c локатором {locator.name}')
                 return
             except (StaleElementReferenceException, ElementClickInterceptedException):
@@ -215,9 +217,10 @@ class BasePage:  # базовый класс для PageObject
         for i in range(CLICK_RETRY):
             try:
                 locator = self.is_locator(locator)
-                self.scroll_to_element(self.is_visible(locator))
-                self.is_visible(locator).clear()
-                self.is_visible(locator).send_keys(text)
+                element = self.is_visible(locator)
+                self.scroll_to_element(element)
+                element.clear()
+                element.send_keys(text)
                 self.logger.info(f'заполняем поле текстом -- {text}')
                 return self
             except StaleElementReferenceException:

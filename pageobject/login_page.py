@@ -24,4 +24,4 @@ class LoginAdminPage(BasePage):
         with allure.step('Логинимся на странцу'):
             self.clear_and_send_keys(self.is_visible(CssLoginAdminPage.USERNAME_ADMIN), config.LOGIN)
             self.clear_and_send_keys(self.is_visible(CssLoginAdminPage.PASSWORD_ADMIN), config.PASSWORD)
-            self.click_locator(CssLoginAdminPage.LOGIN_BUTTON_ADMIN)
+            self.click(CssLoginAdminPage.LOGIN_BUTTON_ADMIN)

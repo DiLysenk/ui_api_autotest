@@ -22,18 +22,18 @@ class AdminPage(BasePage):
 
     def go_to_Products(self):
         with allure.step('перейти в праздел продукты'):
-            self.click_locator(CssAdminPage.CATALOG)
-            self.click_locator(CssAdminPage.PRODUCTS)
+            self.click(CssAdminPage.CATALOG)
+            self.click(CssAdminPage.PRODUCTS)
             return self
 
     def add_product(self, model):
         with allure.step('Перейти на страницу добавления продукта и заполнить поля'):
-            self.click_locator(CssAdminPage.ADD_NEW)
+            self.click(CssAdminPage.ADD_NEW)
             self.clear_and_send_keys(self.is_visible(CssAdminPage.PRODUCT_NAME), model)
             self.clear_and_send_keys(self.is_visible(CssAdminPage.META_TAG_TITLE), model)
             self.click_element(self.is_visible_by_link_text('Data'))
             self.clear_and_send_keys(self.is_visible(CssAdminPage.MODEL), model)
-            self.click_locator(CssAdminPage.SAVE)
+            self.click(CssAdminPage.SAVE)
             return self
 
     def select_product(self):
@@ -43,6 +43,6 @@ class AdminPage(BasePage):
 
     def delete_product(self):
         with allure.step('удалить продукт'):
-            self.click_locator(CssAdminPage.DELETE)
+            self.click(CssAdminPage.DELETE)
             alert = self.browser.switch_to.alert
             alert.accept()

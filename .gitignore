@@ -1,4 +1,5 @@
 /venv/
+/venv2/
 /.idea/
 **.pytest_cache/
 *.log
@@ -9,4 +10,5 @@ shm.py
 **allure
 **logs
 /env/
+.secrets.toml
 docker-compose.yaml
