@@ -91,7 +91,6 @@ class BasePage:  # базовый класс для PageObject
             self.is_page_loaded()
             element = self.wait.until(EC.presence_of_element_located(locator.value))
             self.logger.info(f'успешно найден элемент по локатору с локатором {locator.name}')
-
             return element
         except TimeoutException:
             self.logger.error(f'ошибка, не найден элемент по css  {locator.name}')
