@@ -3,9 +3,7 @@ import allure
 from pageobject.base_page import BasePage
 from selenium.webdriver.common.by import By
 from enum import Enum
-from config_parser import ConfigParser
-
-config = ConfigParser()
+from config import settings as cfg
 
 
 class CssRegisterPage(Enum):
@@ -20,16 +18,16 @@ class CssRegisterPage(Enum):
 
 
 class RegisterPage(BasePage):
-    URL_REGISTER = f'http://{config.IP_DOCKER}:7070/index.php?route=account/register'
+    URL_REGISTER = f'http://{cfg.url.ip_docker}:7070/index.php?route=account/register'
 
     def fill_form(self, name, email):
         with allure.step('fill forms in fields'):
-            self.fill_element(self.is_visible(CssRegisterPage.FIRST_NAME), name)
-            self.fill_element(self.is_visible(CssRegisterPage.LAST_NAME), name)
-            self.fill_element(self.is_visible(CssRegisterPage.EMAIL), email)
-            self.fill_element(self.is_visible(CssRegisterPage.TELEPHONE), "123456789")
-            self.fill_element(self.is_visible(CssRegisterPage.PASSWORD), "123456")
-            self.fill_element(self.is_visible(CssRegisterPage.PASSWORD_CONFIRM), "123456")
+            self.fill_element(self.find_visible(CssRegisterPage.FIRST_NAME), name)
+            self.fill_element(self.find_visible(CssRegisterPage.LAST_NAME), name)
+            self.fill_element(self.find_visible(CssRegisterPage.EMAIL), email)
+            self.fill_element(self.find_visible(CssRegisterPage.TELEPHONE), "123456789")
+            self.fill_element(self.find_visible(CssRegisterPage.PASSWORD), "123456")
+            self.fill_element(self.find_visible(CssRegisterPage.PASSWORD_CONFIRM), "123456")
             return self
 
     def agree_policy(self):

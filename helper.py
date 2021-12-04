@@ -1,27 +1,25 @@
-import logging
 import time
 import requests
 import os
 from requests.exceptions import ConnectionError
-from config_parser import ConfigParser
-import logging
-import enum
 
-config = ConfigParser()
+import logging
+
+
 RETRY = 5
 
 
-def wait_server():
+def wait_server(ip):
     for i in range(RETRY):
         try:
-            if requests.get(f'http://{config.IP_DOCKER}:7070').status_code == 200:
+            if requests.get(f'http://{ip}:7070').status_code == 200:
                 return
         except ConnectionError:
             time.sleep(i)
             logging.error(f'сервис не длступен {i} сек ')
             if i == RETRY - 1:
                 raise AssertionError(
-                    f'http://{config.IP_DOCKER}:7070 сервер c opencart не поднялся, попробуйте запустить еще раз')
+                    f'http://{ip}:7070 сервер c opencart не поднялся, попробуйте запустить еще раз')
 
 
 def create_dir_logs():

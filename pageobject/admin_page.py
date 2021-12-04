@@ -29,16 +29,16 @@ class AdminPage(BasePage):
     def add_product(self, model):
         with allure.step('Перейти на страницу добавления продукта и заполнить поля'):
             self.click(CssAdminPage.ADD_NEW)
-            self.fill_element(self.is_visible(CssAdminPage.PRODUCT_NAME), model)
-            self.fill_element(self.is_visible(CssAdminPage.META_TAG_TITLE), model)
-            self.click_element(self.is_visible_by_link_text('Data'))
-            self.fill_element(self.is_visible(CssAdminPage.MODEL), model)
+            self.fill_element(self.find_visible(CssAdminPage.PRODUCT_NAME), model)
+            self.fill_element(self.find_visible(CssAdminPage.META_TAG_TITLE), model)
+            self.click_element(self.find_by_link_text('Data'))
+            self.fill_element(self.find_visible(CssAdminPage.MODEL), model)
             self.click(CssAdminPage.SAVE)
             return self
 
     def select_product(self):
         with allure.step('выбор продукта'):
-            self.click_nth_child(self.is_visible(CssAdminPage.TABLE), CssAdminPage.SELECT_PRODUCT, 2)
+            self.click_nth_child(self.find_visible(CssAdminPage.TABLE), CssAdminPage.SELECT_PRODUCT, 2)
             return self
 
     def delete_product(self):
