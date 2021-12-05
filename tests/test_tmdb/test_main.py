@@ -1,16 +1,28 @@
 from pageobject.tmdb_page import TMDB
+import allure
+import pytest
 
 
-def test_main(browser):
-    p = TMDB(browser)
-    p.navitage()
-    p.login()
-    assert p.find_by_link_text('xBender')
+@allure.parent_suite("UI")
+@allure.suite("themoviedb.org")
+@allure.label("owner", "QA")
+@pytest.mark.usefixtures('log_fixture')
+class TestTMDBPage:
 
+    @allure.description("""login in site""")
+    @allure.title("login")
+    @pytest.mark.smoke
+    def test_main(self, browser):
+        p = TMDB(browser)
+        p.navitage()
+        p.login()
+        assert p.find_by_link_text('xBender')
 
-def test_changed_sorting(browser):
-    p = TMDB(browser)
-    p.navitage()
-    p.navigate_to_popular()
-    p.select_element(p.loc.SORT_BTN, 'Popularity Ascending')
-    assert p.find_by_link_text('Di Mapigil ang Init')
+    @allure.description("""search movie""")
+    @allure.title("login")
+    @pytest.mark.smoke
+    def test_search_movie(self, browser):
+        p = TMDB(browser)
+        p.navitage()
+        p.fill_search_field('spider-man')
+        assert p.find_by_link_text('Spider-Man')

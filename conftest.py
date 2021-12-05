@@ -4,6 +4,7 @@ import allure
 from selenium import webdriver
 from helper import create_dir_logs, create_dir_allure
 import requests
+from helper import wait_start_server
 from config import settings as cfg
 
 create_dir_logs()
@@ -21,18 +22,23 @@ def pytest_addoption(parser):
     parser.addoption("--browser", action="store_true", default="chrome")
     parser.addoption('--headless', action="store_true", help="Run headless")
     parser.addoption('--executor', action="store_true")
-    parser.addoption('--bversion', action="store", default="91.0", help="version browser")
+    parser.addoption('--bversion', action="store", default="96.0", help="version browser")
     parser.addoption('--system', action='store', default='ubuntu', help='if start on windows set win')
+    parser.addoption('--docker_start', action="store_true")
 
 
 @pytest.fixture(scope='session')
 def browser(request):
+
     browser = request.config.getoption("--browser")
     executor = request.config.getoption("--executor")
     headless = request.config.getoption("--headless")
     bversion = request.config.getoption("--bversion")
     system = request.config.getoption("--system")
-    # wait_server()
+    wait_server_start = request.config.getoption('--docker_start')
+    if wait_server_start:
+        # waiting server
+        wait_start_server(cfg.url.ip_docker)
     if executor:
         caps = {
             "browserName": browser,

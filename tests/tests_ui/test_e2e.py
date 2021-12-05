@@ -11,6 +11,8 @@ myFactory = Faker()
 
 @pytest.mark.usefixtures('log_fixture')
 class TestOpenCart:
+
+
     @allure.description("""Проверка согдания пользователя""")
     @allure.title('тест создание пользоватиеля')
     def test_registration(self, browser):

@@ -11,7 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 
-CLICK_RETRY = 3
+CLICK_RETRY = 2
 
 
 class CssBasePage(Enum):
@@ -40,6 +40,10 @@ class BasePage:  # базовый класс PageObject
 
             return NewLocator.selector
 
+
+
+
+
     def is_page_loaded(self):
         self.wait.until(lambda driver: self.browser.execute_script('return document.readyState') == 'complete')
 
@@ -48,15 +52,36 @@ class BasePage:  # базовый класс PageObject
         locator
         принимает локатор, находит веб элемент и клик по нему
         """
+
         for i in range(CLICK_RETRY, 0, -1):
             try:
+                locator = self.is_locator(locator)
                 self.find_visible(locator).click()
                 self.logger.info(f'клик по элементу c локатором {locator.name}')
                 return
             except (StaleElementReferenceException, ElementClickInterceptedException):
                 sleep(i)
                 if i == CLICK_RETRY - 1:
-                    raise AssertionError(f'Ошибка, не кликнуть по элементу с локатором {locator.name}')
+                    raise AssertionError(f'Ошибка, не кликнуть по элементу с локатором {locator.name}={locator.value}')
+
+    def click_by_text(self, text):
+        """ Клик по элементу
+        locator
+        принимает локатор, находит веб элемент и клик по нему
+        """
+
+        for i in range(CLICK_RETRY, 0, -1):
+            try:
+                self.find_by_text(text).click()
+                self.logger.info(f'клик по элементу c текстом {text}')
+                return
+            except (StaleElementReferenceException, ElementClickInterceptedException):
+                sleep(i)
+                if i == CLICK_RETRY - 1:
+                    raise AssertionError(f'Ошибка, не кликнуть по элементу с текстом {text}')
+
+
+
 
     def fill(self, locator, text):
         """Ввод в поле текста, после очистки его """
@@ -71,20 +96,20 @@ class BasePage:  # базовый класс PageObject
                 return self
             except StaleElementReferenceException:
                 if i == CLICK_RETRY - 1:
-                    raise AssertionError(f'Ошибка, не найден элемент, {locator.name}')
+                    raise AssertionError(f'Ошибка, не найден элемент, {locator.name}={locator.value}')
 
     def find_presence(self, locator):
         """Метод для верификации элемента на странице с помощью селектора
         (элемент может быть невидим на странице, но он присутствует в DOM)"""
+        locator = self.is_locator(locator)
+        self.is_page_loaded()
         try:
-            locator = self.is_locator(locator)
-            self.is_page_loaded()
             element = self.wait.until(EC.presence_of_element_located(locator.value))
             self.logger.info(f'успешно найден элемент по локатору с локатором {locator.name}')
             return element
         except TimeoutException:
-            self.logger.error(f'ошибка, не найден элемент по css  {locator.name}')
-            raise AssertionError(f'ошибка,не найден элемент по css  {locator.name}')
+            self.logger.error(f'ошибка, не найден элемент  {locator.name}={locator.value}')
+            raise AssertionError(f'ошибка,не найден элемент  {locator.name}={locator.value}')
 
     def find_by_link_text(self, text):
         """Верификация элемента по тексту
@@ -111,17 +136,23 @@ class BasePage:  # базовый класс PageObject
         locator: вида (By, 'locator')
         принимает локатор, возвращает WebElement
         """
+        locator = self.is_locator(locator)
         for i in range(CLICK_RETRY, 0, -1):
             try:
                 self.is_page_loaded()
                 element = self.wait.until(EC.visibility_of_element_located(locator.value))
-                self.logger.info(f'успешно найден элемент с локатором {locator.name}')
+                self.logger.info(f'успешно найден элемент с локатором {locator.name}={locator.value}')
                 return element
             except TimeoutException:
                 sleep(i)
                 if i == CLICK_RETRY - 1:
-                    self.logger.error(f'ошибка, не найден элемент по css {locator.name}')
-                    raise AssertionError(f'ошибка, не найден элемент по css {locator.name}')
+                    self.logger.error(f'ошибка, не найден элемент {locator.name}={locator.value}')
+                    raise AssertionError(f'ошибка, не найден элемент {locator.name}={locator.value}')
+
+
+
+
+
 
     def are_presence(self, locator, quantity: int = 1):
         """Метод для верификации элементОВ по селектору,
@@ -135,8 +166,8 @@ class BasePage:  # базовый класс PageObject
                 self.wait_time(3)
                 return self.wait.until(EC.presence_of_all_elements_located(locator.value))
         except TimeoutException:
-            self.logger.error(f'Ошибка, элемент не найден {locator.name}')
-            raise AssertionError(f'Ошибка, элемент не найден {locator.name}')
+            self.logger.error(f'Ошибка, элемент не найден {locator.name}={locator.value}')
+            raise AssertionError(f'Ошибка, элемент не найден {locator.name}={locator.value}')
 
     def find_by_text(self, text: str):
         """Метод для верификации элемента по его названию,
@@ -163,16 +194,16 @@ class BasePage:  # базовый класс PageObject
                 self.wait_time(3)
                 return self.wait.until(EC.visibility_of_all_elements_located(locator.value))
         except TimeoutException:
-            self.logger.error(f'Ошибка, элемент не найден {locator.name}')
-            raise AssertionError(f'Ошибка, элемент не найден {locator.name}')
+            self.logger.error(f'Ошибка, элемент не найден {locator.name}={locator.value}')
+            raise AssertionError(f'Ошибка, элемент не найден {locator.name}={locator.value}')
 
     def is_not_visible(self, locator):
         try:
             locator = self.is_locator(locator)
             return self.wait.until(EC.invisibility_of_element(locator.value))
         except TimeoutException:
-            self.logger.error(f'Ошибка, элемент найден и не исчезает {locator.name}')
-            raise AssertionError(f'Ошибка, элемент не исчез с экрана {locator.name}')
+            self.logger.error(f'Ошибка, элемент найден и не исчезает {locator.name}={locator.value}')
+            raise AssertionError(f'Ошибка, элемент не исчез с экрана {locator.name}={locator.value}')
 
     def verify_url(self, url):
         try:
@@ -207,7 +238,7 @@ class BasePage:  # базовый класс PageObject
         locator = self.is_locator(locator)
         element_child = element.find_elements(*locator.value)[index]
         self.click_element(element_child)
-        self.logger.info(f'Клик в элемент по счёту {index} с локатором {locator.name}')
+        self.logger.info(f'Клик в элемент по счёту {index} с локатором {locator.name}={locator.value}')
         return self
 
     def fill_element(self, element, text):

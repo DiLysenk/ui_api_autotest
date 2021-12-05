@@ -22,12 +22,12 @@ class RegisterPage(BasePage):
 
     def fill_form(self, name, email):
         with allure.step('fill forms in fields'):
-            self.fill_element(self.find_visible(CssRegisterPage.FIRST_NAME), name)
-            self.fill_element(self.find_visible(CssRegisterPage.LAST_NAME), name)
-            self.fill_element(self.find_visible(CssRegisterPage.EMAIL), email)
-            self.fill_element(self.find_visible(CssRegisterPage.TELEPHONE), "123456789")
-            self.fill_element(self.find_visible(CssRegisterPage.PASSWORD), "123456")
-            self.fill_element(self.find_visible(CssRegisterPage.PASSWORD_CONFIRM), "123456")
+            self.fill(CssRegisterPage.FIRST_NAME, name)
+            self.fill(CssRegisterPage.LAST_NAME, name)
+            self.fill(CssRegisterPage.EMAIL, email)
+            self.fill(CssRegisterPage.TELEPHONE, "123456789")
+            self.fill(CssRegisterPage.PASSWORD, "123456")
+            self.fill(CssRegisterPage.PASSWORD_CONFIRM, "123456")
             return self
 
     def agree_policy(self):

@@ -20,6 +20,8 @@ class CssAdminPage(Enum):
 
 class AdminPage(BasePage):
 
+    loc = CssAdminPage
+
     def go_to_Products(self):
         with allure.step('перейти в праздел продукты'):
             self.click(CssAdminPage.CATALOG)
@@ -29,10 +31,10 @@ class AdminPage(BasePage):
     def add_product(self, model):
         with allure.step('Перейти на страницу добавления продукта и заполнить поля'):
             self.click(CssAdminPage.ADD_NEW)
-            self.fill_element(self.find_visible(CssAdminPage.PRODUCT_NAME), model)
-            self.fill_element(self.find_visible(CssAdminPage.META_TAG_TITLE), model)
+            self.fill(CssAdminPage.PRODUCT_NAME, model)
+            self.fill(CssAdminPage.META_TAG_TITLE, model)
             self.click_element(self.find_by_link_text('Data'))
-            self.fill_element(self.find_visible(CssAdminPage.MODEL), model)
+            self.fill(CssAdminPage.MODEL, model)
             self.click(CssAdminPage.SAVE)
             return self
 

@@ -10,7 +10,6 @@ class CssMainPage(Enum):
     CABINET = (By.CSS_SELECTOR, '.hidden-xs.hidden-sm.hidden-md')
 
 
-
 class MainPage(BasePage):
     OpenCArt = f'http://{cfg.url.ip_docker}:7070'
     POUND_STERLING = "£ Pound Sterling"
@@ -36,4 +35,3 @@ class MainPage(BasePage):
     def choose_sort_by(self, value):
         with allure.step(f'выбрать сортировку {value}'):
             self.find_by_text('Tablets').click()
-
