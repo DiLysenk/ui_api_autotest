@@ -18,7 +18,7 @@ class LoginAdminPage(BasePage):
 
     def navigate(self):
         with allure.step('Открываем экран '):
-            self.open_page_by_url(self.ADMIN_PAGE)
+            self.navigate_to(self.ADMIN_PAGE)
 
     def login_admin(self):
         with allure.step('Логинимся на страницу'):

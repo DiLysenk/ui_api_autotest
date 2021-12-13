@@ -30,9 +30,9 @@ class TMDB(BasePage):
 
     loc = CssTMDB
 
-    def navitage(self):
+    def navigate(self):
         with allure.step(f'перейдём на страницу {self.url}'):
-            self.open_page_by_url(self.url)
+            self.navigate_to(self.url)
             return self
 
     def login(self):

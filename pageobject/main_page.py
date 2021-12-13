@@ -20,7 +20,7 @@ class MainPage(BasePage):
 
     def navigate(self):
         with allure.step(f'переход на страницу {self.OpenCArt}'):
-            self.open_page_by_url(self.OpenCArt)
+            self.navigate_to(self.OpenCArt)
 
     def change_currency(self):
         with allure.step('изменить валюту'):

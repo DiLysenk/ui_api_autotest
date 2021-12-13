@@ -14,7 +14,7 @@ class TestTMDBPage:
     @pytest.mark.smoke
     def test_main(self, browser):
         p = TMDB(browser)
-        p.navitage()
+        p.navigate()
         p.login()
         assert p.find_by_link_text('xBender')
 
@@ -23,6 +23,6 @@ class TestTMDBPage:
     @pytest.mark.smoke
     def test_search_movie(self, browser):
         p = TMDB(browser)
-        p.navitage()
+        p.navigate()
         p.fill_search_field('spider-man')
         assert p.find_by_link_text('Spider-Man')

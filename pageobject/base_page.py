@@ -289,7 +289,7 @@ class BasePage:  # базовый класс PageObject
         self.is_not_visible(CssBasePage.LOADING_TAG.value)
         return self
 
-    def open_page_by_url(self, url):
+    def navigate_to(self, url):
         self.browser.get(url)
         self.wait.until(lambda driver: self.browser.execute_script('return document.readyState') == 'complete')
         self.is_not_visible(CssBasePage.LOADING_TAG)
