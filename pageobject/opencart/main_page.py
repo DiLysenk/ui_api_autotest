@@ -1,5 +1,5 @@
 import allure
-from .base_page import BasePage
+from pageobject.base_page import BasePage
 from config import settings as cfg
 from selenium.webdriver.common.by import By
 from enum import Enum

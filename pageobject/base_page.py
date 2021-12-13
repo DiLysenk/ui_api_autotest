@@ -3,13 +3,13 @@ import enum
 import logging
 from time import sleep
 from selenium.common.exceptions import TimeoutException, StaleElementReferenceException, \
-    ElementClickInterceptedException
+    ElementClickInterceptedException, ElementNotInteractableException
 from enum import Enum
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
+
 
 CLICK_RETRY = 2
 
@@ -29,8 +29,7 @@ class BasePage:  # базовый класс PageObject
     def __repr__(self):
         return 'base_methods'
 
-    @staticmethod
-    def is_locator(locator):
+    def _is_locator(self, locator):
         """ Приводит локатор к виду Enum """
         if isinstance(locator, Enum):
             return locator
@@ -39,10 +38,6 @@ class BasePage:  # базовый класс PageObject
                 selector = (By.CSS_SELECTOR, locator)
 
             return NewLocator.selector
-
-
-
-
 
     def is_page_loaded(self):
         self.wait.until(lambda driver: self.browser.execute_script('return document.readyState') == 'complete')
@@ -55,7 +50,7 @@ class BasePage:  # базовый класс PageObject
 
         for i in range(CLICK_RETRY, 0, -1):
             try:
-                locator = self.is_locator(locator)
+                locator = self._is_locator(locator)
                 self.find_visible(locator).click()
                 self.logger.info(f'клик по элементу c локатором {locator.name}')
                 return
@@ -80,28 +75,25 @@ class BasePage:  # базовый класс PageObject
                 if i == CLICK_RETRY - 1:
                     raise AssertionError(f'Ошибка, не кликнуть по элементу с текстом {text}')
 
-
-
-
     def fill(self, locator, text):
         """Ввод в поле текста, после очистки его """
         for i in range(CLICK_RETRY):
             try:
-                locator = self.is_locator(locator)
+                locator = self._is_locator(locator)
                 element = self.find_visible(locator)
                 self.scroll_to_element(element)
                 element.clear()
                 element.send_keys(text)
                 self.logger.info(f'заполняем поле текстом -- {text}')
                 return self
-            except StaleElementReferenceException:
+            except (StaleElementReferenceException, ElementNotInteractableException):
                 if i == CLICK_RETRY - 1:
                     raise AssertionError(f'Ошибка, не найден элемент, {locator.name}={locator.value}')
 
     def find_presence(self, locator):
         """Метод для верификации элемента на странице с помощью селектора
         (элемент может быть невидим на странице, но он присутствует в DOM)"""
-        locator = self.is_locator(locator)
+        locator = self._is_locator(locator)
         self.is_page_loaded()
         try:
             element = self.wait.until(EC.presence_of_element_located(locator.value))
@@ -136,7 +128,7 @@ class BasePage:  # базовый класс PageObject
         locator: вида (By, 'locator')
         принимает локатор, возвращает WebElement
         """
-        locator = self.is_locator(locator)
+        locator = self._is_locator(locator)
         for i in range(CLICK_RETRY, 0, -1):
             try:
                 self.is_page_loaded()
@@ -149,16 +141,11 @@ class BasePage:  # базовый класс PageObject
                     self.logger.error(f'ошибка, не найден элемент {locator.name}={locator.value}')
                     raise AssertionError(f'ошибка, не найден элемент {locator.name}={locator.value}')
 
-
-
-
-
-
     def are_presence(self, locator, quantity: int = 1):
         """Метод для верификации элементОВ по селектору,
         quantity: это предполагаемое минимальное количество которое он должен найти"""
         try:
-            locator = self.is_locator(locator)
+            locator = self._is_locator(locator)
             self.is_page_loaded()
             if len(self.wait.until(EC.presence_of_all_elements_located(locator.value))) >= quantity:
                 return self.wait.until(EC.presence_of_all_elements_located(locator.value))
@@ -186,7 +173,7 @@ class BasePage:  # базовый класс PageObject
         """Метод для верификации элементОВ по селектору,
         quantity: это предполагаемое минимальное количество которое он должен найти"""
         try:
-            locator = self.is_locator(locator)
+            locator = self._is_locator(locator)
             self.is_page_loaded()
             if len(self.wait.until(EC.visibility_of_all_elements_located(locator.value))) >= quantity:
                 return self.wait.until(EC.visibility_of_all_elements_located(locator.value))
@@ -199,18 +186,11 @@ class BasePage:  # базовый класс PageObject
 
     def is_not_visible(self, locator):
         try:
-            locator = self.is_locator(locator)
+            locator = self._is_locator(locator)
             return self.wait.until(EC.invisibility_of_element(locator.value))
         except TimeoutException:
             self.logger.error(f'Ошибка, элемент найден и не исчезает {locator.name}={locator.value}')
             raise AssertionError(f'Ошибка, элемент не исчез с экрана {locator.name}={locator.value}')
-
-    def verify_url(self, url):
-        try:
-            return self.wait.until(EC.url_to_be(url))
-        except TimeoutException:
-            self.logger.error(f'Ошибка, адрес странички не  {url}')
-            raise AssertionError(f'Ошибка, адрес странички не  {url}')
 
     def click_element_ac(self, element):
         """Клик с помощью action chains"""
@@ -235,7 +215,7 @@ class BasePage:  # базовый класс PageObject
     def click_nth_child(self, element, locator, index: int = 0):
         """ В найденном элементе (например таблице) находит элементы с одинаковым css_selector
          и клик по порядковому номеру (index) """
-        locator = self.is_locator(locator)
+        locator = self._is_locator(locator)
         element_child = element.find_elements(*locator.value)[index]
         self.click_element(element_child)
         self.logger.info(f'Клик в элемент по счёту {index} с локатором {locator.name}={locator.value}')
@@ -248,45 +228,8 @@ class BasePage:  # базовый класс PageObject
         self.logger.info(f'заполняем поле текстом -- {text}')
         return self
 
-    def send_keys_with_enter(self, element, text):
-        """Ввод в поле текста и последующее нажатие ENTER
-        подходит для полей фильтров с выпадающем списком"""
-        element.send_keys(text)
-        element.send_keys(Keys.ENTER)
-        self.logger.info(f'заполняем поле текстом -- {text} и нажимаем Enter')
-        return self
-
-    @staticmethod
-    def get_attribute_element(element, attribute):
-        return element.get_attribute(attribute)
-
-    def refresh_browser(self):
-        self.browser.refresh()
-        self.is_page_loaded()
-        return self
-
-    @staticmethod
-    def get_property_text_of_element(element):
-        return element.get_property('textContent')
-
-    def get_text_of_element(self, locator):
-        locator = self.is_locator(locator)
-        return self.find_visible(locator).text
-
-    def get_text_of_element_by_text_link(self, text_link):
-        return self.find_by_link_text(text_link).text
-
-    @staticmethod
-    def get_html_of_element(element):
-        return element.get_property('outerHTML')
-
     def wait_time(self, time: int = 1):
         sleep(time)
-        return self
-
-    def click_by_link_text(self, link_text: str):
-        self.click_element(self.find_by_link_text(link_text))
-        self.is_not_visible(CssBasePage.LOADING_TAG.value)
         return self
 
     def navigate_to(self, url):
@@ -315,7 +258,3 @@ class BasePage:  # базовый класс PageObject
 
     def scroll_to_element(self, element):
         self.browser.execute_script('arguments[0].scrollIntoView(true);', element)
-
-    def delete_text_in_element(self, element):
-        element.send_keys(Keys.CONTROL + Keys.BACKSPACE)
-        return self

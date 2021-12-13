@@ -1,7 +1,7 @@
-from pageobject.register_page import RegisterPage
-from pageobject.admin_page import AdminPage, CssAdminPage
-from pageobject.login_page import LoginAdminPage
-from pageobject.main_page import MainPage
+from pageobject.opencart.register_page import RegisterPage
+from pageobject.opencart.admin_page import AdminPage, CssAdminPage
+from pageobject.opencart.login_page import LoginAdminPage
+from pageobject.opencart.main_page import MainPage
 import pytest
 import allure
 from faker import Faker
