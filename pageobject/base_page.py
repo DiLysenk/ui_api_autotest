@@ -10,7 +10,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 
-
 CLICK_RETRY = 2
 
 
@@ -28,16 +27,6 @@ class BasePage:  # базовый класс PageObject
 
     def __repr__(self):
         return 'base_methods'
-
-    def _is_locator(self, locator):
-        """ Приводит локатор к виду Enum """
-        if isinstance(locator, Enum):
-            return locator
-        else:
-            class NewLocator(enum.Enum):
-                selector = (By.CSS_SELECTOR, locator)
-
-            return NewLocator.selector
 
     def is_page_loaded(self):
         self.wait.until(lambda driver: self.browser.execute_script('return document.readyState') == 'complete')
@@ -258,3 +247,13 @@ class BasePage:  # базовый класс PageObject
 
     def scroll_to_element(self, element):
         self.browser.execute_script('arguments[0].scrollIntoView(true);', element)
+
+    def _is_locator(self, locator):
+        """ Приводит локатор к виду Enum """
+        if isinstance(locator, Enum):
+            return locator
+        else:
+            class NewLocator(enum.Enum):
+                selector = (By.CSS_SELECTOR, locator)
+
+            return NewLocator.selector

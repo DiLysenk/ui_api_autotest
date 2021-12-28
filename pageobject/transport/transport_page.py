@@ -19,9 +19,9 @@ class TransportPage(BasePage):
 
     locator = CssTransportPage
 
-    def _check_page(self):
+    def _check_element(self, element):
         try:
-            self.find_visible('div.search')
+            self.find_visible(element)
         except:
             raise AssertionError('нет поля для страницы главной страницы')
 
@@ -36,25 +36,25 @@ class TransportPage(BasePage):
 
     def fill_number_field(self, number):
         with allure.step('заполним поле с номером маршрута'):
-            self._check_page()
+            self._check_element('div.search')
             self.fill(self.locator.NUMBER_FILED, number)
             return self
 
     def fill_name_station(self, station):
-        with allure.step('заполним поле с станции'):
-            self._check_page()
+        with allure.step(f'заполним поле с станции {station}'):
+            self._check_element('div.search')
             self.fill(self.locator.NAME_STATION, station)
             return self
 
     def fill_name_street(self, street):
-        with allure.step('заполним поле с улицы'):
-            self._check_page()
+        with allure.step(f'заполним поле с улицы {street}'):
+            self._check_element('div.search')
             self.fill(self.locator.NAME_STREET, street)
             return self
 
     def press_btn_find(self):
-        with allure.step('заполним поле с выполним поиск'):
-            self._check_page()
+        with allure.step('нажмём кнопку поиск'):
+            self._check_element('div.search')
             self.click(self.locator.BTN_FIND)
             return self
 
