@@ -4,7 +4,7 @@ from enum import Enum
 import allure
 
 
-class RawInput(BasePage):
+class AutoPick(BasePage):
 
     def _set_value_autoinput(self, field, conteiner, text):
         self.click(field)
