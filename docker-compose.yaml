@@ -1,4 +1,5 @@
 version: '3'
+
 services:
   selenoid:
     image: "aerokube/selenoid"
@@ -58,11 +59,30 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - 'tests_data:/app/allure'
-      - 'tests_data:/app/logs'
+      - 'tests_data:/app/_allure'
+      - 'tests_data:/app/_logs'
     depends_on:
       - opencart
 
+  allure:
+    image: "frankescobar/allure-docker-service"
+    environment:
+      CHECK_RESULTS_EVERY_SECONDS: 1
+      KEEP_HISTORY: 1
+    ports:
+      - "5050:5050"
+    volumes:
+      - ${PWD}/allure-results:/app/_allure/allure-results
+      - ${PWD}/allure-reports:/app/_allure/default-reports
+
+  allure-ui:
+    image: "frankescobar/allure-docker-service-ui"
+    environment:
+      ALLURE_DOCKER_PUBLIC_API_URL: "http://localhost:5050"
+      ALLURE_DOCKER_PUBLIC_API_URL_PREFIX: ""
+    ports:
+      - "5252:5252"
+      -
 volumes:
 #  jenkins_data:
 #    driver: local
