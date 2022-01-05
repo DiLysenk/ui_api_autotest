@@ -53,15 +53,15 @@ services:
 #      - JENKINS_PASSWORD=bitnami
 #    volumes:
 #      - 'jenkins_data:/bitnami/jenkins'
-  tests:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - 'tests_data:/app/allure'
-      - 'tests_data:/app/logs'
-    depends_on:
-      - opencart
+#  tests:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    volumes:
+#      - 'tests_data:/app/allure'
+#      - 'tests_data:/app/logs'
+#    depends_on:
+#      - opencart
 
 volumes:
 #  jenkins_data:
