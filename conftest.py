@@ -22,7 +22,7 @@ def pytest_addoption(parser):
     parser.addoption("--browser", action="store_true", default="chrome")
     parser.addoption('--headless', action="store_true", help="Run headless")
     parser.addoption('--executor', action="store_true")
-    parser.addoption('--bversion', action="store", default="96.0", help="version browser")
+    parser.addoption('--bversion', action="store", default="95.0", help="version browser")
     parser.addoption('--system', action='store', default='ubuntu', help='if start on windows set win')
     parser.addoption('--docker_start', action="store_true")
 
