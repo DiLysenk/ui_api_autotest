@@ -16,7 +16,7 @@ def wait_start_server(ip):
                 return
         except ConnectionError:
             time.sleep(i)
-            logging.error(f'сервис не длступен {i} сек ')
+            logging.error(f'сервис не доступен {i} сек ')
             if i == RETRY - 1:
                 raise AssertionError(
                     f'http://{ip}:7070 сервер c opencart не поднялся, попробуйте запустить еще раз')

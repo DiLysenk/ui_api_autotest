@@ -29,8 +29,6 @@ services:
     volumes:
       - 'mariadb_data:/bitnami/mariadb'
 
-
-
   opencart:
     image: docker.io/bitnami/opencart:3
     ports:
@@ -64,21 +62,22 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - 'tests_data:/app/_allure'
-      - 'tests_data:/app/_logs'
+      - 'tests_data:/app/allure-results'
     depends_on:
       - opencart
 
   allure:
     image: "frankescobar/allure-docker-service"
     environment:
-      CHECK_RESULTS_EVERY_SECONDS: 1
-      KEEP_HISTORY: 1
+      CHECK_RESULTS_EVERY_SECONDS: 30
+      KEEP_HISTORY: 20
     ports:
       - "5050:5050"
     volumes:
       - 'tests_data:/app/allure-results'
       - 'tests_data:/app/default-reports'
+    depends_on:
+      - tests
 
   allure-ui:
     image: "frankescobar/allure-docker-service-ui"
@@ -97,4 +96,6 @@ volumes:
   opencart_storage_data:
     driver: local
   tests_data:
+    driver: local
+
 
