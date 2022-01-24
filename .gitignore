@@ -1,14 +1,12 @@
 /venv/
-/venv2/
 /.idea/
 **.pytest_cache/
 *.log
 **__pycache__/
 **allure-report/
-allure/allure-results/
+allure-results/
 shm.py
 **allure
 **logs
 /env/
 .secrets.toml
-docker-compose.yaml
