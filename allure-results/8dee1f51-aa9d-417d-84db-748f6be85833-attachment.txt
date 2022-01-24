@@ -1,0 +1,25 @@
+INFO     BrowserLogger:conftest.py:81 ===> Test started name, test is test_add_new_item
+INFO     LoginAdminPage:base_page.py:125 успешно найден элемент с локатором USERNAME_ADMIN=('css selector', '[name="username"]')
+INFO     LoginAdminPage:base_page.py:76 заполняем поле текстом -- user
+INFO     LoginAdminPage:base_page.py:125 успешно найден элемент с локатором PASSWORD_ADMIN=('css selector', '[name="password"]')
+INFO     LoginAdminPage:base_page.py:76 заполняем поле текстом -- bitnami
+INFO     LoginAdminPage:base_page.py:125 успешно найден элемент с локатором LOGIN_BUTTON_ADMIN=('css selector', '.btn.btn-primary')
+INFO     LoginAdminPage:base_page.py:44 клик по элементу c локатором LOGIN_BUTTON_ADMIN
+INFO     AdminPage:base_page.py:125 успешно найден элемент с локатором CATALOG=('css selector', '[data-toggle="collapse"]')
+INFO     AdminPage:base_page.py:44 клик по элементу c локатором CATALOG
+INFO     AdminPage:base_page.py:125 успешно найден элемент с локатором PRODUCTS=('css selector', '.collapse.in li + li a')
+INFO     AdminPage:base_page.py:44 клик по элементу c локатором PRODUCTS
+INFO     AdminPage:base_page.py:125 успешно найден элемент с локатором ADD_NEW=('css selector', '[data-original-title="Add New"]')
+INFO     AdminPage:base_page.py:44 клик по элементу c локатором ADD_NEW
+INFO     AdminPage:base_page.py:125 успешно найден элемент с локатором PRODUCT_NAME=('css selector', '[placeholder="Product Name"]')
+INFO     AdminPage:base_page.py:76 заполняем поле текстом -- #bc8121
+INFO     AdminPage:base_page.py:125 успешно найден элемент с локатором META_TAG_TITLE=('css selector', '[placeholder="Meta Tag Title"]')
+INFO     AdminPage:base_page.py:76 заполняем поле текстом -- #bc8121
+INFO     AdminPage:base_page.py:106 успешно найден элемент с текстом -- Data
+INFO     AdminPage:base_page.py:197 клик по элементу
+INFO     AdminPage:base_page.py:125 успешно найден элемент с локатором MODEL=('css selector', '[placeholder="Model"]')
+INFO     AdminPage:base_page.py:76 заполняем поле текстом -- #bc8121
+INFO     AdminPage:base_page.py:125 успешно найден элемент с локатором SAVE=('css selector', '.fa.fa-save')
+INFO     AdminPage:base_page.py:44 клик по элементу c локатором SAVE
+INFO     LoginAdminPage:base_page.py:154 найден элемент с текстом #bc8121
+INFO     BrowserLogger:conftest.py:89 ===> Test finished name, test is test_add_new_item

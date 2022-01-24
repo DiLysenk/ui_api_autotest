@@ -1,0 +1,6 @@
+INFO     BrowserLogger:conftest.py:81 ===> Test started name, test is test_switch_currency
+INFO     MainPage:base_page.py:125 успешно найден элемент с локатором CURRENCY=('css selector', '.btn.btn-link.dropdown-toggle')
+INFO     MainPage:base_page.py:44 клик по элементу c локатором CURRENCY
+INFO     MainPage:base_page.py:154 найден элемент с текстом £ Pound Sterling
+INFO     MainPage:base_page.py:154 найден элемент с текстом £
+INFO     BrowserLogger:conftest.py:89 ===> Test finished name, test is test_switch_currency

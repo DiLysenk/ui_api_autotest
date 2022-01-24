@@ -47,7 +47,7 @@ services:
       - 'opencart_data:/bitnami/opencart'
       - 'opencart_storage_data:/bitnami/opencart_storage/'
     depends_on:
-      - mariadb
+      - selenoid
 #  jenkins:
 #    image: docker.io/bitnami/jenkins:2
 #    ports:
