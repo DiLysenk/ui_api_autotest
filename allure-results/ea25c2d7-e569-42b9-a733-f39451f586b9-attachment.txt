@@ -1,1 +1,0 @@
-INFO     urllib3.poolmanager:poolmanager.py:414 Redirecting http://172.17.0.1:4444//wd/hub/session -> http://172.17.0.1:4444/wd/hub/session
