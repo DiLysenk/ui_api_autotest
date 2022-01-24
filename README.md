@@ -7,3 +7,5 @@ config .secrets.toml
 docker pull selenoid/vnc_chrome:96.0
 
 docker-compose up
+
+open localhost:5252
