@@ -1,7 +1,11 @@
 Tests for  opencart and api https://dog.ceo/api
 
-1. git clone project
+git clone project
 
-2. docker-compose -up
+config .secrets.toml
 
-3. docker pull selenoid/vnc:chrome_96.0
+docker pull selenoid/vnc_chrome:96.0
+
+docker-compose up
+
+open localhost:5252

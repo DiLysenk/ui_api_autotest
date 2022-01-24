@@ -6,6 +6,7 @@ from helper import create_dir_logs, create_dir_allure
 import requests
 from helper import wait_start_server
 from config import settings as cfg
+from time import sleep
 
 create_dir_logs()
 create_dir_allure()
@@ -29,13 +30,14 @@ def pytest_addoption(parser):
 
 @pytest.fixture(scope='session')
 def browser(request):
-
+    sleep(15)
     browser = request.config.getoption("--browser")
     executor = request.config.getoption("--executor")
     headless = request.config.getoption("--headless")
     bversion = request.config.getoption("--bversion")
     system = request.config.getoption("--system")
     wait_server_start = request.config.getoption('--docker_start')
+
     if wait_server_start:
         # waiting server
         wait_start_server(cfg.url.ip_docker)
@@ -43,13 +45,17 @@ def browser(request):
         caps = {
             "browserName": browser,
             "browserVersion": bversion,
+            "selenoid:options": {
+                "enableVNC": True,
+                "enableVideo": False,
+                "screenResolution": '1920x1080x24'
+            },
             'goog:chromeOptions': {}
         }
         browser = webdriver.Remote(
             command_executor=f'http://{cfg.url.ip_docker}:4444//wd/hub',
             desired_capabilities=caps
         )
-        browser.maximize_window()
         browser.get(f'http://{cfg.url.ip_docker}:7070')
     elif headless:
         options = webdriver.ChromeOptions()

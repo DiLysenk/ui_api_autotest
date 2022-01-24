@@ -1,4 +1,5 @@
 version: '3'
+
 services:
   selenoid:
     image: "aerokube/selenoid"
@@ -8,6 +9,7 @@ services:
     volumes:
       - "$PWD:/etc/selenoid/" # assumed current dir contains browsers.json
       - "/var/run/docker.sock:/var/run/docker.sock"
+
   selenoid-ui:
     image: "aerokube/selenoid-ui"
     network_mode: bridge
@@ -17,6 +19,7 @@ services:
       - "8080:8080"
 #    command: ["--selenoid-uri", "http://172.30.37.123:4444"]
     command: ["--selenoid-uri",  "http://selenoid:4444"]  #for linux docker
+
   mariadb:
     image: docker.io/bitnami/mariadb:10.3
     environment:
@@ -25,6 +28,7 @@ services:
       - MARIADB_DATABASE=bitnami_opencart
     volumes:
       - 'mariadb_data:/bitnami/mariadb'
+
   opencart:
     image: docker.io/bitnami/opencart:3
     ports:
@@ -43,7 +47,7 @@ services:
       - 'opencart_data:/bitnami/opencart'
       - 'opencart_storage_data:/bitnami/opencart_storage/'
     depends_on:
-      - mariadb
+      - selenoid
 #  jenkins:
 #    image: docker.io/bitnami/jenkins:2
 #    ports:
@@ -58,11 +62,30 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - 'tests_data:/app/allure'
-      - 'tests_data:/app/logs'
+      - 'tests_data:/app/allure-results'
     depends_on:
       - opencart
 
+  allure:
+    image: "frankescobar/allure-docker-service"
+    environment:
+      CHECK_RESULTS_EVERY_SECONDS: 60
+      KEEP_HISTORY: "TRUE"
+    ports:
+      - "5050:5050"
+    volumes:
+      - 'tests_data:/app/allure-results'
+      - 'tests_data:/app/default-reports'
+    depends_on:
+      - tests
+
+  allure-ui:
+    image: "frankescobar/allure-docker-service-ui"
+    environment:
+      ALLURE_DOCKER_PUBLIC_API_URL: "http://localhost:5050"
+      ALLURE_DOCKER_PUBLIC_API_URL_PREFIX: ""
+    ports:
+      - "5252:5252"
 volumes:
 #  jenkins_data:
 #    driver: local
@@ -73,3 +96,6 @@ volumes:
   opencart_storage_data:
     driver: local
   tests_data:
+    driver: local
+
+
