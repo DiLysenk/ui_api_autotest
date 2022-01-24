@@ -1,8 +1,4 @@
-from selenium.webdriver.common.by import By
-from pageobject.base_page import BasePage
 from enum import Enum
-import allure
-from selenium.webdriver.support.ui import Select
 
 
 class CssFAS(Enum):

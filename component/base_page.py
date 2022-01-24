@@ -257,3 +257,17 @@ class BasePage:  # базовый класс PageObject
                 selector = (By.CSS_SELECTOR, locator)
 
             return NewLocator.selector
+
+    def input_fields(self, model_input):
+        list_fields = []
+        # list_fields = [attribute for attribute in dir(model_input) if attribute.endswith('_field')]
+
+        list_model = dir(model_input)
+
+        for attribute in list_model:
+            if attribute.endswith('_field'):
+                list_fields.append(attribute)
+
+        for field in list_fields:
+            if model_input.__getattribute__(field) is not None:
+                model_input.__getattribute__(field).set_value()

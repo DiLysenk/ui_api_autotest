@@ -1,5 +1,5 @@
 from selenium.webdriver.common.by import By
-from pageobject.base_page import BasePage
+from component.base_page import BasePage
 from enum import Enum
 import allure
 
