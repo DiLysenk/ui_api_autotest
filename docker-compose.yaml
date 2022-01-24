@@ -69,8 +69,8 @@ services:
   allure:
     image: "frankescobar/allure-docker-service"
     environment:
-      CHECK_RESULTS_EVERY_SECONDS: 30
-      KEEP_HISTORY: 20
+      CHECK_RESULTS_EVERY_SECONDS: 60
+      KEEP_HISTORY: "TRUE"
     ports:
       - "5050:5050"
     volumes:

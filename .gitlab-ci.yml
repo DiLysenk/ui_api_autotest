@@ -1,0 +1,12 @@
+default:
+  image: dtzar/helm-kubectl
+
+stages:
+  - preapare
+
+preapare:
+  stage: preapare
+  when: manual
+  script:
+    - echo 'hi there'
+    - kubctl
