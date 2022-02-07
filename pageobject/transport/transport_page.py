@@ -27,7 +27,7 @@ class TransportPage(BasePage):
 
     def navigate(self):
         with allure.step('Открываем экран '):
-            self.navigate_to(self.URL)
+            self.open_url(self.URL)
 
     def select_transport(self, transport: str):
         select_transport = Select(self.find_visible(self.locator.CHOOSE_TRANSPORT))

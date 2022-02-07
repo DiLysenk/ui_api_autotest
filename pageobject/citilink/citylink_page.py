@@ -3,7 +3,7 @@ from selenium.webdriver.common.by import By
 from enum import Enum
 import allure
 
-from component.autocomplate_input import AutoCompleteInput
+from component.autocomplete_input import AutoCompleteInput
 from component.input_field import InputField
 from component.drop_down_menu import DropDownMenu
 from component.base_page import BasePage

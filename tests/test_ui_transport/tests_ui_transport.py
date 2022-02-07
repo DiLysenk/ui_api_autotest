@@ -9,7 +9,7 @@ class TestTransport:
 
     def test_find_bus(self, browser):
         p = TransportPage(browser)
-        p.navigate_to(p.URL)
+        p.open_url(p.URL)
         p.select_transport('Автобус')
         p.fill_number_field('К-271')
         p.press_btn_find()
@@ -18,7 +18,7 @@ class TestTransport:
 
     def test_find_station(self, browser):
         p = TransportPage(browser)
-        p.navigate_to(p.URL)
+        p.open_url(p.URL)
         p.select_transport('Автобус')
         p.fill_name_station('Парнас')
         p.press_btn_find()
@@ -27,7 +27,7 @@ class TestTransport:
 
     def test_find_street(self, browser):
         p = TransportPage(browser)
-        p.navigate_to(p.URL)
+        p.open_url(p.URL)
         p.select_transport('Автобус')
         p.fill_name_station('Суздальский')
         p.press_btn_find()

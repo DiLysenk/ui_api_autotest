@@ -6,7 +6,15 @@ import pytest
 class TestCytiLink:
 
     def test_poisk(self, browser):
-        cp = CityPO(browser, poisk='NVIDIA GeForce RTX 3060')
-        cp.navigate_to(cp.url)
-        cp.fill_in_the_fields(cp)
+        city_main_page = CityPO(browser, poisk='NVIDIA GeForce RTX 3060')
+        city_main_page.open_url(city_main_page.url)
+        city_main_page.fill_in_the_fields(city_main_page)
+
+
+    # def sorted(self, browser):
+    #     city_main_page = CityPO(browser, sorted_platform='AMD')
+    #     city_main_page.open_url(city_main_page.url)
+    #     city_main_page.open(CityCSS.my_configuration)
+
+
 

@@ -18,7 +18,7 @@ class TestOpenCart:
     def test_registration(self, browser):
         p = RegisterPage(browser)
         p. \
-            navigate_to(p.URL_REGISTER). \
+            open_url(p.URL_REGISTER). \
             fill_form(myFactory.name(), myFactory.email()). \
             agree_policy(). \
             click_continue()
@@ -30,7 +30,7 @@ class TestOpenCart:
         name = myFactory.color()
         p = LoginAdminPage(browser)
         p. \
-            navigate_to(p.ADMIN_PAGE). \
+            open_url(p.ADMIN_PAGE). \
             login_admin()
         AdminPage(browser) \
             .go_to_Products() \
@@ -41,7 +41,7 @@ class TestOpenCart:
     @allure.title('тест удаление товара')
     def test_delete_item(self, browser):
         LoginAdminPage(browser). \
-            navigate_to(LoginAdminPage.ADMIN_PAGE). \
+            open_url(LoginAdminPage.ADMIN_PAGE). \
             login_admin()
         AdminPage(browser).go_to_Products() \
             .select_product() \
@@ -52,7 +52,7 @@ class TestOpenCart:
     @allure.title('тест изменение валюты')
     def test_switch_currency(self, browser):
         MainPage(browser). \
-            navigate_to(MainPage.OpenCArt). \
+            open_url(MainPage.OpenCArt). \
             change_currency()
         assert MainPage(browser).find_by_text('£'), "валюта не переведена"
 
@@ -62,6 +62,6 @@ class TestOpenCart:
     def test_switch_currency_fail(self, browser):
         p = MainPage(browser)
         p. \
-            navigate_to(p.OpenCArt). \
+            open_url(p.OpenCArt). \
             change_currency()
         assert p.find_by_text('₽'), "не должно быть такой валюты"

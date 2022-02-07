@@ -222,7 +222,7 @@ class BasePage:  # базовый класс PageObject
         sleep(time)
         return self
 
-    def navigate_to(self, url):
+    def open_url(self, url):
         self.browser.get(url)
         self.wait.until(lambda driver: self.browser.execute_script('return document.readyState') == 'complete')
         return self
