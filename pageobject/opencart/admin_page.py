@@ -1,5 +1,5 @@
 from selenium.webdriver.common.by import By
-from pageobject.base_page import BasePage
+from component.base_page import BasePage
 from enum import Enum
 import allure
 
@@ -31,10 +31,10 @@ class AdminPage(BasePage):
     def add_product(self, model):
         with allure.step('Перейти на страницу добавления продукта и заполнить поля'):
             self.click(CssAdminPage.ADD_NEW)
-            self.fill(CssAdminPage.PRODUCT_NAME, model)
-            self.fill(CssAdminPage.META_TAG_TITLE, model)
+            self.fill_input(CssAdminPage.PRODUCT_NAME, model)
+            self.fill_input(CssAdminPage.META_TAG_TITLE, model)
             self.click_element(self.find_by_link_text('Data'))
-            self.fill(CssAdminPage.MODEL, model)
+            self.fill_input(CssAdminPage.MODEL, model)
             self.click(CssAdminPage.SAVE)
             return self
 

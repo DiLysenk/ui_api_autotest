@@ -29,13 +29,6 @@ def create_dir_logs():
         print('папка создана всё ок')
 
 
-def create_dir_allure():
-    try:
-        os.mkdir('_allure')
-    except FileExistsError:
-        print('папка создана всё ок')
-
-
 class Helper:
 
     @staticmethod

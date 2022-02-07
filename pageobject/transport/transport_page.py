@@ -1,5 +1,5 @@
 from selenium.webdriver.common.by import By
-from pageobject.base_page import BasePage
+from component.base_page import BasePage
 from enum import Enum
 import allure
 from selenium.webdriver.support.ui import Select
@@ -37,19 +37,19 @@ class TransportPage(BasePage):
     def fill_number_field(self, number):
         with allure.step('заполним поле с номером маршрута'):
             self._check_element('div.search')
-            self.fill(self.locator.NUMBER_FILED, number)
+            self.fill_input(self.locator.NUMBER_FILED, number)
             return self
 
     def fill_name_station(self, station):
         with allure.step(f'заполним поле с станции {station}'):
             self._check_element('div.search')
-            self.fill(self.locator.NAME_STATION, station)
+            self.fill_input(self.locator.NAME_STATION, station)
             return self
 
     def fill_name_street(self, street):
         with allure.step(f'заполним поле с улицы {street}'):
             self._check_element('div.search')
-            self.fill(self.locator.NAME_STREET, street)
+            self.fill_input(self.locator.NAME_STREET, street)
             return self
 
     def press_btn_find(self):

@@ -2,14 +2,13 @@ import pytest
 import logging
 import allure
 from selenium import webdriver
-from helper import create_dir_logs, create_dir_allure
+from helper import create_dir_logs
 import requests
 from helper import wait_start_server
 from config import settings as cfg
 from time import sleep
 
 create_dir_logs()
-create_dir_allure()
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filemode='w',
                     level=logging.INFO, filename='_logs/selenium.log')
@@ -30,7 +29,6 @@ def pytest_addoption(parser):
 
 @pytest.fixture(scope='session')
 def browser(request):
-    sleep(15)
     browser = request.config.getoption("--browser")
     executor = request.config.getoption("--executor")
     headless = request.config.getoption("--headless")
