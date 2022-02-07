@@ -10,6 +10,6 @@ class InputField(BasePage):
 
     def set_value(self):
         if self.value is not None:
-            self.fill(self.container, self.value)
+            self.fill_input(self.container, self.value)
 
 

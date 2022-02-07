@@ -22,6 +22,6 @@ class LoginAdminPage(BasePage):
 
     def login_admin(self):
         with allure.step('Логинимся на страницу'):
-            self.fill(self.loc.USERNAME_ADMIN, cfg.user.username)
-            self.fill(self.loc.PASSWORD_ADMIN, cfg.user.password)
+            self.fill_input(self.loc.USERNAME_ADMIN, cfg.user.username)
+            self.fill_input(self.loc.PASSWORD_ADMIN, cfg.user.password)
             self.click(self.loc.LOGIN_BUTTON_ADMIN)

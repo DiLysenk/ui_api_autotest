@@ -9,8 +9,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
+import allure
 
-CLICK_RETRY = 2
+RETRY = 2
 
 
 class CssBasePage(Enum):
@@ -25,48 +26,47 @@ class BasePage:  # базовый класс PageObject
         self.wait = WebDriverWait(self.browser, waiting)
         self.logger = logging.getLogger(type(self).__name__)
 
-    def __repr__(self):
-        return 'base_methods'
-
     def is_page_loaded(self):
         self.wait.until(lambda driver: self.browser.execute_script('return document.readyState') == 'complete')
 
+    @allure.step('Клик {locator}')
     def click(self, locator):
         """ Клик по элементу
         locator
         принимает локатор, находит веб элемент и клик по нему
         """
-
-        for i in range(CLICK_RETRY, 0, -1):
+        for i in range(RETRY, 0, -1):
             try:
                 locator = self._is_locator(locator)
                 self.find_visible(locator).click()
                 self.logger.info(f'клик по элементу c локатором {locator.name}')
-                return
+                return self
             except (StaleElementReferenceException, ElementClickInterceptedException):
                 sleep(i)
-                if i == CLICK_RETRY - 1:
+                if i == 1:
                     raise AssertionError(f'Ошибка, не кликнуть по элементу с локатором {locator.name}={locator.value}')
 
+    @allure.step('Клик c текстом {text}')
     def click_by_text(self, text):
         """ Клик по элементу
         locator
         принимает локатор, находит веб элемент и клик по нему
         """
 
-        for i in range(CLICK_RETRY, 0, -1):
+        for i in range(RETRY, 0, -1):
             try:
                 self.find_by_text(text).click()
                 self.logger.info(f'клик по элементу c текстом {text}')
-                return
+                return self
             except (StaleElementReferenceException, ElementClickInterceptedException):
                 sleep(i)
-                if i == CLICK_RETRY - 1:
+                if i == 1:
                     raise AssertionError(f'Ошибка, не кликнуть по элементу с текстом {text}')
 
-    def fill(self, locator, text):
+    @allure.step('Заполним {locator} c текстом {text}')
+    def fill_input(self, locator, text):
         """Ввод в поле текста, после очистки его """
-        for i in range(CLICK_RETRY):
+        for i in range(RETRY):
             try:
                 locator = self._is_locator(locator)
                 element = self.find_visible(locator)
@@ -76,7 +76,7 @@ class BasePage:  # базовый класс PageObject
                 self.logger.info(f'заполняем поле текстом -- {text}')
                 return self
             except (StaleElementReferenceException, ElementNotInteractableException):
-                if i == CLICK_RETRY - 1:
+                if i == 1:
                     raise AssertionError(f'Ошибка, не найден элемент, {locator.name}={locator.value}')
 
     def find_presence(self, locator):
@@ -99,7 +99,7 @@ class BasePage:  # базовый класс PageObject
         text: название элемента
         принимает название, возвращает WebElement
         """
-        for i in range(CLICK_RETRY, 0, -1):
+        for i in range(RETRY, 0, -1):
             try:
                 self.is_page_loaded()
                 element = self.wait.until(EC.visibility_of_element_located((By.LINK_TEXT, text)))
@@ -107,10 +107,11 @@ class BasePage:  # базовый класс PageObject
                 return element
             except TimeoutException:
                 sleep(i)
-                if i == CLICK_RETRY - 1:
+                if i == 1:
                     self.logger.error(f'Ошибка, не найдена ссылка с текстом "{text}')
                     raise AssertionError(f'Ошибка, не найдена ссылка с текстом "{text}')
 
+    @allure.step('Заполним')
     def find_visible(self, locator):
         """Верификация видимости элемента на странице с помощью локатора
 
@@ -118,7 +119,7 @@ class BasePage:  # базовый класс PageObject
         принимает локатор, возвращает WebElement
         """
         locator = self._is_locator(locator)
-        for i in range(CLICK_RETRY, 0, -1):
+        for i in range(RETRY, 0, -1):
             try:
                 self.is_page_loaded()
                 element = self.wait.until(EC.visibility_of_element_located(locator.value))
@@ -126,7 +127,7 @@ class BasePage:  # базовый класс PageObject
                 return element
             except TimeoutException:
                 sleep(i)
-                if i == CLICK_RETRY - 1:
+                if i == 1:
                     self.logger.error(f'ошибка, не найден элемент {locator.name}={locator.value}')
                     raise AssertionError(f'ошибка, не найден элемент {locator.name}={locator.value}')
 
@@ -191,14 +192,14 @@ class BasePage:  # базовый класс PageObject
         element: WebElement
         принимает WebElement, клик по WebElement
         """
-        for i in range(CLICK_RETRY, 0, -1):
+        for i in range(RETRY, 0, -1):
             try:
                 element.click()
                 self.logger.info('клик по элементу')
                 break
             except (StaleElementReferenceException, ElementClickInterceptedException):
                 sleep(i)
-                if i == CLICK_RETRY - 1:
+                if i == 1:
                     raise AssertionError('Ошибка, не кликнуть по элементу')
 
     def click_nth_child(self, element, locator, index: int = 0):
@@ -224,7 +225,6 @@ class BasePage:  # базовый класс PageObject
     def navigate_to(self, url):
         self.browser.get(url)
         self.wait.until(lambda driver: self.browser.execute_script('return document.readyState') == 'complete')
-        self.is_not_visible(CssBasePage.LOADING_TAG)
         return self
 
     def save_screenshot(self, request):
@@ -258,16 +258,12 @@ class BasePage:  # базовый класс PageObject
 
             return NewLocator.selector
 
-    def input_fields(self, model_input):
-        list_fields = []
-        # list_fields = [attribute for attribute in dir(model_input) if attribute.endswith('_field')]
+    def fill_in_the_fields(self, model_input=None):
+        if model_input is not None:
+            list_model = dir(model_input)
 
-        list_model = dir(model_input)
+            list_fields = [attribute for attribute in list_model if attribute.endswith('_field')]
 
-        for attribute in list_model:
-            if attribute.endswith('_field'):
-                list_fields.append(attribute)
-
-        for field in list_fields:
-            if model_input.__getattribute__(field) is not None:
-                model_input.__getattribute__(field).set_value()
+            for field in list_fields:
+                if model_input.__getattribute__(field) is not None:
+                    model_input.__getattribute__(field).set_value()
