@@ -11,10 +11,10 @@ class TestCytiLink:
         city_main_page.fill_in_the_fields(city_main_page)
 
 
-    # def sorted(self, browser):
-    #     city_main_page = CityPO(browser, sorted_platform='AMD')
-    #     city_main_page.open_url(city_main_page.url)
-    #     city_main_page.open(CityCSS.my_configuration)
+    def sorted(self, browser):
+        city_main_page = CityPO(browser, sorted_platform='AMD')
+        city_main_page.open_url(city_main_page.url)
+        city_main_page.open(CityCSS.my_configuration)
 
 
 

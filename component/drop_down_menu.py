@@ -2,7 +2,7 @@ from component.base_page import BasePage
 import allure
 
 
-class AutoCompleteInput(BasePage):
+class DropDownMenu(BasePage):
 
     def __init__(self, browser, value, container, name=None, container_with_entity=None):
         super().__init__(browser)

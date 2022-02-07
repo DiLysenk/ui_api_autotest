@@ -19,7 +19,6 @@ class CityCSS(Enum):
 class CityPO(BasePage):
     url = 'https://www.citilink.ru/'
 
-
     def __init__(self, browser, poisk=None):
         super().__init__(browser)
         self.poisk = poisk
@@ -28,11 +27,10 @@ class CityPO(BasePage):
                                              container=CityCSS.search_by_item,
                                              container_with_entity=CityCSS.container_search_by_item)
 
+    class MyConfig(BasePage):
 
+        def __init__(self, browser, sorted_platform=None):
+            super().__init__(browser)
+            self.sorted_platform = sorted_platform
 
-
-
-
-
-
-
+            self.sorted_platform_field = DropDownMenu()
