@@ -31,7 +31,7 @@ class AutoCompleteInput(BasePage):
             menu = self.are_visible(locator=(self.container_menu, self.entity_in_menu))
             for element in menu:
                 text_element = element.text
-                if self.value in text_element:
+                if self.value == text_element:
                     self.click_element(element)
                     return self
                 else:

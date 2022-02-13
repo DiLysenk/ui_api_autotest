@@ -4,6 +4,7 @@ from enum import Enum
 import allure
 
 from component.autocomplete_input import AutoCompleteInput
+from component.search_entity import SearchBy
 from component.input_field import InputField
 from component.drop_down_menu import DropDownMenu
 from component.base_page import BasePage
@@ -27,7 +28,7 @@ class KomTekPageObject(BasePage):
         super().__init__(browser)
         self.search_goods = search_goods
 
-        self.search_goods_attribute = AutoCompleteInput(self.browser, search_goods, KomTekCSS.FIELD_SEARCH,
+        self.search_goods_attribute = SearchBy(self.browser, search_goods, KomTekCSS.FIELD_SEARCH,
                                                         name="Поиск товара",
                                                         input_selector=KomTekCSS.INPUT_SELECTOR,
                                                         container_menu=KomTekCSS.CONTAINER_SEARCH_MENU,
