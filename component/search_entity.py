@@ -29,11 +29,13 @@ class SearchBy(BasePage):
             self.find_visible(o)
             self.wait_time(1)
             menu = self.are_visible(locator=(self._container_menu(), self._entity_in_menu()))
-            for element in menu:
-                text_element = element.text
-                if self.value in text_element:
-                    self.click_element(element)
-                    return self
+            with allure.step(f'найдём в меню {self.value} --- {self.value}'):
+                self.fill_input(self._input_field(), self.value)
+                for element in menu:
+                    text_element = element.text
+                    if self.value in text_element:
+                        self.click_element(element)
+                        return self
                 else:
                     raise AssertionError("Элемент с таким названием не найден")
 
