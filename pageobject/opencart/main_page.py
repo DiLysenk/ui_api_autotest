@@ -24,12 +24,12 @@ class MainPage(BasePage):
 
     def change_currency(self):
         with allure.step('изменить валюту'):
-            self.click(CssMainPage.CURRENCY)
+            self.click_locator(CssMainPage.CURRENCY)
             self.find_by_text(self.POUND_STERLING).click()
 
     def forward_to_register(self):
         with allure.step('перейти к регистрации'):
-            self.click(CssMainPage.CABINET)
+            self.click_locator(CssMainPage.CABINET)
             self.find_by_text('Регистрация').click()
 
     def choose_sort_by(self, value):

@@ -7,3 +7,5 @@ deepdiff
 jsonschema
 faker
 dynaconf
+lxml
+cssselect

@@ -18,6 +18,6 @@ class SearchBy(BasePage):
             self.wait_time()
             for element in menu:
                 if self.value in element.text:
-                    element.click()
+                    self.click_element(element)
                 else:
                     raise AssertionError("Элемент с таким названием не найден")

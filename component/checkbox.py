@@ -10,4 +10,4 @@ class CheckBox(BasePage):
 
     def set_value(self):
         if self.value is not None:
-            self.click(self.container)
+            self.click_locator(self.container)

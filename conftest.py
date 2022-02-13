@@ -5,9 +5,7 @@ from selenium import webdriver
 from helper import create_dir_logs
 import requests
 from helper import wait_start_server
-from config import settings as cfg
-from time import sleep
-
+from config import settings
 create_dir_logs()
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filemode='w',
@@ -38,7 +36,7 @@ def browser(request):
 
     if wait_server_start:
         # waiting server
-        wait_start_server(cfg.url.ip_docker)
+        wait_start_server(settings.url.ip_docker)
     if executor:
         caps = {
             "browserName": browser,
@@ -51,16 +49,16 @@ def browser(request):
             'goog:chromeOptions': {}
         }
         browser = webdriver.Remote(
-            command_executor=f'http://{cfg.url.ip_docker}:4444//wd/hub',
+            command_executor=f'http://{settings.url.ip_docker}:4444//wd/hub',
             desired_capabilities=caps
         )
-        browser.get(f'http://{cfg.url.ip_docker}:7070')
+        browser.get(f'http://{settings.url.ip_docker}:7070')
     elif headless:
         options = webdriver.ChromeOptions()
         options.headless = request.config.getoption("--headless")
         browser = webdriver.Chrome(options=options)
         browser.maximize_window()
-        browser.get(f'http://{cfg.url.ip_docker}:7070')
+        browser.get(f'http://{settings.url.ip_docker}:7070')
     elif system == 'win':
         browser = webdriver.Chrome('C:\chromedriver\chromedriver.exe')
     else:
