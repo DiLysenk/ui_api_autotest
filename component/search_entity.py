@@ -25,19 +25,14 @@ class SearchBy(BasePage):
             self._entity_in_menu()
             with allure.step(f'заполним поле {self._name()} значением {self.value}'):
                 self.fill_input(self._input_field(), self.value)
-            o = self._container_menu()
-            self.find_visible(o)
-            self.wait_time(1)
+            self.find_visible(self._container_menu())
             menu = self.are_visible(locator=(self._container_menu(), self._entity_in_menu()))
-            with allure.step(f'найдём в меню {self.value} --- {self.value}'):
-                self.fill_input(self._input_field(), self.value)
-                for element in menu:
-                    text_element = element.text
-                    if self.value in text_element:
-                        self.click_element(element)
-                        return self
-                else:
-                    raise AssertionError("Элемент с таким названием не найден")
+            for element in menu:
+                if self.value in element.text:
+                    self.click_element(element)
+                    return self
+            else:
+                raise AssertionError("Элемент с таким названием не найден")
 
     def _name(self):
         if self.name is None:

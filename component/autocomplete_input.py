@@ -21,13 +21,9 @@ class AutoCompleteInput(BasePage):
 
     def set_value(self):
         if self.value is not None:
-            self._name()
-            self._entity_in_menu()
             with allure.step(f'заполним поле {self._name()} значением {self.value}'):
                 self.fill_input(self._input_field(), self.value)
-            o = self._container_menu()
-            self.find_visible(o)
-            self.wait_time(1)
+            self.find_visible(self._container_menu())
             menu = self.are_visible(locator=(self.container_menu, self.entity_in_menu))
             for element in menu:
                 text_element = element.text
@@ -40,6 +36,8 @@ class AutoCompleteInput(BasePage):
     def _name(self):
         if self.name is None:
             return 'Неизвестное поле (Имя не указано)'
+        else:
+            return self.name
 
     def _entity_in_menu(self):
         if self.entity_in_menu is None:
@@ -56,3 +54,4 @@ class AutoCompleteInput(BasePage):
     def _container_menu(self):
         if self.container_menu is not None:
             return self.container_menu
+
