@@ -10,8 +10,8 @@ class DropDownMenu(BasePage):
         self.container = container  # контейнер с полем
         self.container_with_entity = container_with_entity  # контейнер с вариантами
         self.name = name  # Название поля
-        self.entity_in_menu = '[target="_self"]'
-        self.input_container = (self.container.value[1] + " " + 'input')
+        self.entity_in_menu = '.filters-popup__link-text'
+        self.popup = self.container.value
 
     def _name(self):
         if self.name is None:
@@ -25,11 +25,11 @@ class DropDownMenu(BasePage):
         if self.value is not None:
             self._name()
             self._container_with_entity()
-            with allure.step(f'заполним поле {self.name} значением'):
+            with allure.step(f'кликнем по раскрывающемся меню'):
                 try:
-                    self.click(self.input_container)
+                    self.click_locator(self.popup)
                 except:
-                    raise AssertionError(f'не найдено после для заполнения {self.input_container}')
+                    raise AssertionError(f'не найдено поле для {self.popup}')
             try:
                 self.find_visible(self.container_with_entity)
             except:
@@ -39,7 +39,7 @@ class DropDownMenu(BasePage):
             for element in menu:
                 text_element = element.text
                 if self.value == text_element:
-                    element.click()
+                    self.click_element(element)
                     return
                 else:
                     raise AssertionError("Элемент с таким названием не найден")

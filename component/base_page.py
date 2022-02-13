@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import enum
+from component.locators import Locator
 import logging
 from time import sleep
 from selenium.common.exceptions import TimeoutException, StaleElementReferenceException, \
@@ -10,6 +11,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 import allure
+from typing import Union
 
 RETRY = 2
 
@@ -29,8 +31,9 @@ class BasePage:  # базовый класс PageObject
     def is_page_loaded(self):
         self.wait.until(lambda driver: self.browser.execute_script('return document.readyState') == 'complete')
 
+
     @allure.step('Клик {locator}')
-    def click(self, locator):
+    def click_locator(self, locator):
         """ Клик по элементу
         locator
         принимает локатор, находит веб элемент и клик по нему
@@ -38,11 +41,13 @@ class BasePage:  # базовый класс PageObject
         for i in range(RETRY, 0, -1):
             try:
                 locator = self._is_locator(locator)
-                self.find_visible(locator).click()
+                element = self.find_presence(locator)
+                sleep(i * 0.5)
+                self.move_to_element(element)
+                self.click_element(element)
                 self.logger.info(f'клик по элементу c локатором {locator.name}')
                 return self
             except (StaleElementReferenceException, ElementClickInterceptedException):
-                sleep(i)
                 if i == 1:
                     raise AssertionError(f'Ошибка, не кликнуть по элементу с локатором {locator.name}={locator.value}')
 
@@ -64,14 +69,13 @@ class BasePage:  # базовый класс PageObject
                     raise AssertionError(f'Ошибка, не кликнуть по элементу с текстом {text}')
 
     @allure.step('Заполним {locator} c текстом {text}')
-    def fill_input(self, locator, text):
+    def fill_input(self, locator: [Enum, str], text):
         """Ввод в поле текста, после очистки его """
         for i in range(RETRY):
             try:
                 locator = self._is_locator(locator)
-                element = self.find_visible(locator)
-                self.scroll_to_element(element)
-                element.clear()
+                element = self.find_presence(locator)
+                # element.clear()
                 element.send_keys(text)
                 self.logger.info(f'заполняем поле текстом -- {text}')
                 return self
@@ -146,20 +150,24 @@ class BasePage:  # базовый класс PageObject
             self.logger.error(f'Ошибка, элемент не найден {locator.name}={locator.value}')
             raise AssertionError(f'Ошибка, элемент не найден {locator.name}={locator.value}')
 
-    def find_by_text(self, text: str):
+    def find_by_text(self, text: str, locator: (str, None) = None):
         """Метод для верификации элемента по его названию,
         для нахождения элемента достаточно указать название элемента"""
+        self.is_page_loaded()
+        if locator is None:
+            xpath_locator = f'//*[text()="{text}"]'
+        else:
+            xpath_locator = Locator.to_xpath(locator, text)
         try:
-            self.is_page_loaded()
-            element = self.wait.until(EC.visibility_of_element_located((By.XPATH, f'//*[text()="{text}"]')))
+            element = self.wait.until(EC.visibility_of_element_located((By.XPATH, xpath_locator)))
             self.logger.info(f'найден элемент с текстом {text}')
             return element
         except TimeoutException:
-            self.logger.error(f'Ошибка,  не найден элемент с названием {text}')
-            raise AssertionError(f'Ошибка, не найден элемент с названием {text}')
+            self.logger.error(f'Ошибка,  не найден элемент -- {xpath_locator} -- с названием -- {text}')
+            raise AssertionError(f'Ошибка, не найден элемент -- {xpath_locator} -- с названием -- {text}')
 
     # метод для верификации элементов с помощью локатора
-    def are_visible(self, locator, quantity: int = 1):
+    def are_visible(self, locator: Union[Enum, str, tuple], quantity: int = 1):
         """Метод для верификации элементОВ по селектору,
         quantity: это предполагаемое минимальное количество которое он должен найти"""
         try:
@@ -185,6 +193,11 @@ class BasePage:  # базовый класс PageObject
     def click_element_ac(self, element):
         """Клик с помощью action chains"""
         ActionChains(self.browser).pause(0.1).move_to_element(element).click().perform()
+
+    def move_to_element(self, element):
+        self.follow_mouse()
+        ActionChains(self.browser).pause(0.1).move_to_element(element)
+        return element
 
     def click_element(self, element):
         """ Клик по элементу
@@ -248,22 +261,56 @@ class BasePage:  # базовый класс PageObject
     def scroll_to_element(self, element):
         self.browser.execute_script('arguments[0].scrollIntoView(true);', element)
 
-    def _is_locator(self, locator):
+    def _is_locator(self, locator: (str, Enum, tuple[Enum, Enum])) -> Enum:
         """ Приводит локатор к виду Enum """
         if isinstance(locator, Enum):
             return locator
-        else:
-            class NewLocator(enum.Enum):
-                selector = (By.CSS_SELECTOR, locator)
+        elif isinstance(locator, tuple):
+            selector = (By.CSS_SELECTOR, locator[0].value[1] + ' ' + locator[1].value[1])
+            return Enum('NewLocator', [('selector', selector)]).selector
+        elif isinstance(locator, str):
+            selector = (By.CSS_SELECTOR, locator)
+            return Enum('NewLocator', [('selector', selector)]).selector
 
-            return NewLocator.selector
-
-    def fill_in_the_fields(self, model_input=None):
+    def fill_in_fields(self, model_input=None):
         if model_input is not None:
             list_model = dir(model_input)
 
-            list_fields = [attribute for attribute in list_model if attribute.endswith('_field')]
+            list_fields = [attribute for attribute in list_model if attribute.endswith('_attribute')]
 
             for field in list_fields:
                 if model_input.__getattribute__(field) is not None:
                     model_input.__getattribute__(field).set_value()
+
+    def scroll_to(self, element, offset_x=0, offset_y=0):
+        x = element.location['x'] + offset_x
+        y = element.location['y'] + offset_y
+        self.browser.execute_script(f"window.scrollTo({x}, {y})")
+        return element
+
+    def follow_mouse(self):
+        script = """
+        // Create mouse following image.
+        var seleniumFollowerImg = document.createElement("img");
+        // Set image properties.
+        seleniumFollowerImg.setAttribute('src', 'data:image/png;base64,'
+            + 'iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAQAAACGG/bgAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAA'
+            + 'HsYAAB7GAZEt8iwAAAAHdElNRQfgAwgMIwdxU/i7AAABZklEQVQ4y43TsU4UURSH8W+XmYwkS2I0'
+            + '9CRKpKGhsvIJjG9giQmliHFZlkUIGnEF7KTiCagpsYHWhoTQaiUUxLixYZb5KAAZZhbunu7O/PKf'
+            + 'e+fcA+/pqwb4DuximEqXhT4iI8dMpBWEsWsuGYdpZFttiLSSgTvhZ1W/SvfO1CvYdV1kPghV68a3'
+            + '0zzUWZH5pBqEui7dnqlFmLoq0gxC1XfGZdoLal2kea8ahLoqKXNAJQBT2yJzwUTVt0bS6ANqy1ga'
+            + 'VCEq/oVTtjji4hQVhhnlYBH4WIJV9vlkXLm+10R8oJb79Jl1j9UdazJRGpkrmNkSF9SOz2T71s7M'
+            + 'SIfD2lmmfjGSRz3hK8l4w1P+bah/HJLN0sys2JSMZQB+jKo6KSc8vLlLn5ikzF4268Wg2+pPOWW6'
+            + 'ONcpr3PrXy9VfS473M/D7H+TLmrqsXtOGctvxvMv2oVNP+Av0uHbzbxyJaywyUjx8TlnPY2YxqkD'
+            + 'dAAAAABJRU5ErkJggg==');
+        seleniumFollowerImg.setAttribute('id', 'selenium_mouse_follower');
+        seleniumFollowerImg.setAttribute('style', 'position: absolute; z-index: 99999999999; pointer-events: none;');
+        // Add mouse follower to the web page.
+        document.body.appendChild(seleniumFollowerImg);
+        document.onmousemove = function(e) {
+            const mousePointer = document.getElementById('selenium_mouse_follower');
+            mousePointer.style.left = e.pageX + 'px';
+            mousePointer.style.top = e.pageY + 'px';
+        }
+        """
+        self.browser.execute_script(script)

@@ -32,9 +32,9 @@ class RegisterPage(BasePage):
 
     def agree_policy(self):
         with allure.step('click in registration'):
-            self.click(CssRegisterPage.CHECK_BOX_AGREE)
+            self.click_locator(CssRegisterPage.CHECK_BOX_AGREE)
             return self
 
     def click_continue(self):
         with allure.step('click in continue'):
-            self.click(CssRegisterPage.CONTINUE)
+            self.click_locator(CssRegisterPage.CONTINUE)
