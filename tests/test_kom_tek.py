@@ -9,3 +9,4 @@ class TestKomTek:
         main_page.fill_in_fields(main_page)
         main_page.wait_time(5)
         assert main_page.find_by_text('ZA8N0012RU', locator='[itemprop="name"]')
+

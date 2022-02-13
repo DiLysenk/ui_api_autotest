@@ -19,7 +19,6 @@ class SearchBy(BasePage):
         self.name = name  # Название поля
         self.entity_in_menu = entity_in_menu
 
-
     def set_value(self):
         if self.value is not None:
             self._name()
@@ -29,7 +28,7 @@ class SearchBy(BasePage):
             o = self._container_menu()
             self.find_visible(o)
             self.wait_time(1)
-            menu = self.are_visible(locator=(self.container_menu, self._entity_in_menu()))
+            menu = self.are_visible(locator=(self._container_menu(), self._entity_in_menu()))
             for element in menu:
                 text_element = element.text
                 if self.value in text_element:
