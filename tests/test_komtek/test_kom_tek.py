@@ -3,8 +3,6 @@ from pageobject.komtek_net.kom_tek import KomTekPageObject
 
 class TestKomTek:
 
-
-
     def test_search_goods(self, browser):
         main_page = KomTekPageObject(browser, search_goods='IdeaTab K10 TB-X6C6F 64Gb')
         main_page.open_url(main_page.url)
