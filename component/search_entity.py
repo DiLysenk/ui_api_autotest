@@ -1,6 +1,5 @@
-import enum
-
 from component.base_page import BasePage
+from component.locators import Locator
 import allure
 
 
@@ -40,7 +39,7 @@ class SearchBy(BasePage):
 
     def _entity_in_menu(self):
         if self.entity_in_menu is None:
-            return self._is_locator('')
+            return Locator.is_locator('')
         else:
             return self.entity_in_menu
 

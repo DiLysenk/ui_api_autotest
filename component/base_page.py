@@ -37,7 +37,7 @@ class BasePage:  # базовый класс PageObject
         """
         for i in range(RETRY, 0, -1):
             try:
-                locator = self._is_locator(locator)
+                locator = Locator.is_locator(locator)
                 element = self.find_presence(locator)
                 sleep(i * 0.5)
                 self.move_to_element(element)
@@ -70,7 +70,7 @@ class BasePage:  # базовый класс PageObject
         """Ввод в поле текста, после очистки его """
         for i in range(RETRY):
             try:
-                locator = self._is_locator(locator)
+                locator = Locator.is_locator(locator)
                 element = self.find_presence(locator)
                 # element.clear()
                 element.send_keys(text)
@@ -83,7 +83,7 @@ class BasePage:  # базовый класс PageObject
     def find_presence(self, locator):
         """Метод для верификации элемента на странице с помощью селектора
         (элемент может быть невидим на странице, но он присутствует в DOM)"""
-        locator = self._is_locator(locator)
+        locator = Locator.is_locator(locator)
         self.is_page_loaded()
         try:
             element = self.wait.until(EC.presence_of_element_located(locator.value))
@@ -119,7 +119,7 @@ class BasePage:  # базовый класс PageObject
         locator: вида (By, 'locator')
         принимает локатор, возвращает WebElement
         """
-        locator = self._is_locator(locator)
+        locator = Locator.is_locator(locator)
         for i in range(RETRY, 0, -1):
             try:
                 self.is_page_loaded()
@@ -136,7 +136,7 @@ class BasePage:  # базовый класс PageObject
         """Метод для верификации элементОВ по селектору,
         quantity: это предполагаемое минимальное количество которое он должен найти"""
         try:
-            locator = self._is_locator(locator)
+            locator = Locator.is_locator(locator)
             self.is_page_loaded()
             if len(self.wait.until(EC.presence_of_all_elements_located(locator.value))) >= quantity:
                 return self.wait.until(EC.presence_of_all_elements_located(locator.value))
@@ -168,7 +168,7 @@ class BasePage:  # базовый класс PageObject
         """Метод для верификации элементОВ по селектору,
         quantity: это предполагаемое минимальное количество которое он должен найти"""
         try:
-            locator = self._is_locator(locator)
+            locator = Locator.is_locator(locator)
             self.is_page_loaded()
             if len(self.wait.until(EC.visibility_of_all_elements_located(locator.value))) >= quantity:
                 return self.wait.until(EC.visibility_of_all_elements_located(locator.value))
@@ -181,7 +181,7 @@ class BasePage:  # базовый класс PageObject
 
     def is_not_visible(self, locator):
         try:
-            locator = self._is_locator(locator)
+            locator = Locator.is_locator(locator)
             return self.wait.until(EC.invisibility_of_element(locator.value))
         except TimeoutException:
             self.logger.error(f'Ошибка, элемент найден и не исчезает {locator.name}={locator.value}')
@@ -215,7 +215,7 @@ class BasePage:  # базовый класс PageObject
     def click_nth_child(self, element, locator, index: int = 0):
         """ В найденном элементе (например таблице) находит элементы с одинаковым css_selector
          и клик по порядковому номеру (index) """
-        locator = self._is_locator(locator)
+        locator = Locator.is_locator(locator)
         element_child = element.find_elements(*locator.value)[index]
         self.click_element(element_child)
         self.logger.info(f'Клик в элемент по счёту {index} с локатором {locator.name}={locator.value}')
@@ -257,17 +257,6 @@ class BasePage:  # базовый класс PageObject
 
     def scroll_to_element(self, element):
         self.browser.execute_script('arguments[0].scrollIntoView(true);', element)
-
-    def _is_locator(self, locator: (str, Enum, tuple[Enum, Enum])) -> Enum:
-        """ Приводит локатор к виду Enum """
-        if isinstance(locator, Enum):
-            return locator
-        elif isinstance(locator, tuple):
-            selector = (By.CSS_SELECTOR, locator[0].value[1] + ' ' + locator[1].value[1])
-            return Enum('NewLocator', [('selector', selector)]).selector
-        elif isinstance(locator, str):
-            selector = (By.CSS_SELECTOR, locator)
-            return Enum('NewLocator', [('selector', selector)]).selector
 
     def fill_in_fields(self, model_input=None):
         if model_input is not None:

@@ -5,7 +5,8 @@ from cssselect import GenericTranslator, SelectorError
 
 class Locator:
 
-    def _is_locator(self, locator: (str, Enum, tuple[Enum, Enum])) -> Enum:
+    @staticmethod
+    def is_locator(locator: (str, Enum, tuple[Enum, Enum])) -> Enum:
         """
         Приводит локатор к виду Enum
         """
@@ -18,9 +19,6 @@ class Locator:
             selector = (By.CSS_SELECTOR, locator)
             return Enum('NewLocator', [('selector', selector)]).selector
 
-    # def xpath_with_contain_text(self, locator, text):
-    #     return f"//*[{self.to_xpath(locator)} and contains(text(),'{text})]"
-
     @staticmethod
     def to_xpath(locator, text):
         """
@@ -31,4 +29,3 @@ class Locator:
         condition = f"[contains(., {GenericTranslator().xpath_literal(text)})]"
 
         return f"{GenericTranslator().css_to_xpath(locator)}{condition}"
-
