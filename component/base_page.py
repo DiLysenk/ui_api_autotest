@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import enum
 from component.locators import Locator
 import logging
 from time import sleep
@@ -31,8 +30,6 @@ class BasePage:  # базовый класс PageObject
     def is_page_loaded(self):
         self.wait.until(lambda driver: self.browser.execute_script('return document.readyState') == 'complete')
 
-
-    @allure.step('Клик {locator}')
     def click_locator(self, locator):
         """ Клик по элементу
         locator
