@@ -21,6 +21,8 @@ class KomTekCSS(Enum):
     BTN_CATALOG = ()
     BTN_FOWARD = ()
     FIELD_PAGINATION = (By.CSS_SELECTOR, '.category-products > div.toolbar > div.sorter > div.limiter > div')
+    FIELD_PAGINATION_MENU = (By.CSS_SELECTOR, '.category-products > div.toolbar > div.sorter > div.limiter > div > div')
+    ENTITY_IN_PAGINATION_MENU = (By.CSS_SELECTOR, ' li.active-result')
 
 
 class KomTekPageObject(BasePage):
@@ -36,7 +38,9 @@ class KomTekPageObject(BasePage):
                                                container_menu=KomTekCSS.CONTAINER_SEARCH_MENU,
                                                entity_in_menu=KomTekCSS.ENTITY_IN_SEARCH_MENU)
         self.pagination = pagination
-        self.pagination_attribute = DropDownMenu(self.browser, pagination, KomTekCSS.FIELD_PAGINATION)
+        self.pagination_attribute = DropDownMenu(self.browser, pagination, KomTekCSS.FIELD_PAGINATION,
+                                                 container_with_entity=KomTekCSS.FIELD_PAGINATION_MENU,
+                                                 entity_in_menu=KomTekCSS.ENTITY_IN_PAGINATION_MENU)
 
     def navigate_to_note_book_table(self):
         self.open_url(self.url)

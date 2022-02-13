@@ -30,8 +30,8 @@ class AutoCompleteInput(BasePage):
                 if self.value == text_element:
                     self.click_element(element)
                     return self
-                else:
-                    raise AssertionError("Элемент с таким названием не найден")
+            else:
+                raise AssertionError("Элемент с таким названием не найден")
 
     def _name(self):
         if self.name is None:
