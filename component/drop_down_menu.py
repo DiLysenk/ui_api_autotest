@@ -10,7 +10,7 @@ class DropDownMenu(BasePage):
         self.name = name  # Название поля
         self.container = container  # контейнер с полем
         self.container_with_entity = container_with_entity  # контейнер с вариантами
-        self.entity_in_menu = entity_in_menu
+        self.entity_in_menu = entity_in_menu    # варианты в меню
 
     def set_value(self):
         if self.value is not None:
