@@ -22,6 +22,8 @@ class AdminPage(BasePage):
 
     loc = CssAdminPage
 
+    url = ''
+
     def go_to_Products(self):
         with allure.step('перейти в праздел продукты'):
             self.click_locator(CssAdminPage.CATALOG)

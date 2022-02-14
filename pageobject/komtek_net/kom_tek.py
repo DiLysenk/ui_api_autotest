@@ -17,18 +17,20 @@ class KomTekCSS(Enum):
     CONTAINER_SEARCH_MENU = (By.CSS_SELECTOR, '.searchautocomplete-placeholder')
     ENTITY_IN_SEARCH_MENU = (By.CSS_SELECTOR, 'li:nth-child(1n)')
     BTN_NOTEBOOKS = (By.CSS_SELECTOR, '.banner.hotcategory')
-    BTN_MAKE_PC = ()
-    BTN_CATALOG = ()
-    BTN_FOWARD = ()
     FIELD_PAGINATION = (By.CSS_SELECTOR, '.category-products > div.toolbar > div.sorter > div.limiter > div')
     FIELD_PAGINATION_MENU = (By.CSS_SELECTOR, '.category-products > div.toolbar > div.sorter > div.limiter > div > div')
     ENTITY_IN_PAGINATION_MENU = (By.CSS_SELECTOR, ' li.active-result')
 
+    BTN_FILTER_MANUFACTOR = (By.CSS_SELECTOR, '.new.odd:nth-child(5)')
+    CHECKBOX_FILTER_MANUFACTOR = (By.CSS_SELECTOR, '')
 
 class KomTekPageObject(BasePage):
     url = 'https://komtek.net.ru/'
 
-    def __init__(self, browser, search_goods=None, pagination=None):
+    def __init__(self, browser,
+                 search_goods=None,
+                 pagination=None,
+                 filter_manufactor=None):
         super().__init__(browser)
         self.search_goods = search_goods
 
@@ -42,7 +44,10 @@ class KomTekPageObject(BasePage):
                                                  container_with_entity=KomTekCSS.FIELD_PAGINATION_MENU,
                                                  entity_in_menu=KomTekCSS.ENTITY_IN_PAGINATION_MENU)
 
+        self.filter_manufactor = filter_manufactor
+        self.filter_manufactor_attribute = CheckBox(self.browser, filter_manufactor,
+                                                    KomTekCSS.CHECKBOX_FILTER_MANUFACTOR)
+
     def navigate_to_note_book_table(self):
         self.open_url(self.url)
         self.click_locator(KomTekCSS.BTN_NOTEBOOKS)
-
