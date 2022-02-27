@@ -7,10 +7,9 @@ from selenium.common.exceptions import TimeoutException, StaleElementReferenceEx
 from enum import Enum
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.action_chains import ActionChains
 import allure
-from typing import Union
 from selenium.webdriver.remote.webelement import WebElement
 RETRY = 2
 
@@ -41,7 +40,8 @@ class BasePage:  # базовый класс PageObject
                 element = self.find_presence(locator)
                 sleep(i * 0.5)
                 self.move_to_element(element)
-                self.click_element(element)
+                with allure.step(f'клик по элементу {locator.name}={locator.value}'):
+                    self.click_element(element)
                 self.logger.info(f'клик по элементу c локатором {locator.name}')
                 return self
             except (StaleElementReferenceException, ElementClickInterceptedException):
@@ -72,21 +72,20 @@ class BasePage:  # базовый класс PageObject
             try:
                 locator = Locator.is_locator(locator)
                 element = self.find_presence(locator)
-                # element.clear()
                 element.send_keys(text)
                 self.logger.info(f'заполняем поле текстом -- {text}')
                 return self
             except (StaleElementReferenceException, ElementNotInteractableException):
                 if i == 1:
                     raise AssertionError(f'Ошибка, не найден элемент, {locator.name}={locator.value}')
-
+    
     def find_presence(self, locator: [Enum, tuple, str]) -> WebElement:
         """Метод для верификации элемента на странице с помощью селектора
         (элемент может быть невидим на странице, но он присутствует в DOM)"""
         locator = Locator.is_locator(locator)
         self.is_page_loaded()
         try:
-            element = self.wait.until(EC.presence_of_element_located(locator.value))
+            element = self.wait.until(ec.presence_of_element_located(locator.value))
             self.logger.info(f'успешно найден элемент по локатору с локатором {locator.name}')
             return element
         except TimeoutException:
@@ -103,7 +102,7 @@ class BasePage:  # базовый класс PageObject
         for i in range(RETRY, 0, -1):
             try:
                 self.is_page_loaded()
-                element = self.wait.until(EC.visibility_of_element_located((By.LINK_TEXT, text)))
+                element = self.wait.until(ec.visibility_of_element_located((By.LINK_TEXT, text)))
                 self.logger.info(f'успешно найден элемент с текстом -- {text}')
                 return element
             except TimeoutException:
@@ -112,7 +111,6 @@ class BasePage:  # базовый класс PageObject
                     self.logger.error(f'Ошибка, не найдена ссылка с текстом "{text}')
                     raise AssertionError(f'Ошибка, не найдена ссылка с текстом "{text}')
 
-    @allure.step('Заполним')
     def find_visible(self, locator: [Enum, tuple, str]) -> WebElement:
         """Верификация видимости элемента на странице с помощью локатора
 
@@ -123,7 +121,7 @@ class BasePage:  # базовый класс PageObject
         for i in range(RETRY, 0, -1):
             try:
                 self.is_page_loaded()
-                element = self.wait.until(EC.visibility_of_element_located(locator.value))
+                element = self.wait.until(ec.visibility_of_element_located(locator.value))
                 self.logger.info(f'успешно найден элемент с локатором {locator.name}={locator.value}')
                 return element
             except TimeoutException:
@@ -138,11 +136,11 @@ class BasePage:  # базовый класс PageObject
         try:
             locator = Locator.is_locator(locator)
             self.is_page_loaded()
-            if len(self.wait.until(EC.presence_of_all_elements_located(locator.value))) >= quantity:
-                return self.wait.until(EC.presence_of_all_elements_located(locator.value))
+            if len(self.wait.until(ec.presence_of_all_elements_located(locator.value))) >= quantity:
+                return self.wait.until(ec.presence_of_all_elements_located(locator.value))
             else:
                 self.wait_time(3)
-                return self.wait.until(EC.presence_of_all_elements_located(locator.value))
+                return self.wait.until(ec.presence_of_all_elements_located(locator.value))
         except TimeoutException:
             self.logger.error(f'Ошибка, элемент не найден {locator.name}={locator.value}')
             raise AssertionError(f'Ошибка, элемент не найден {locator.name}={locator.value}')
@@ -156,7 +154,7 @@ class BasePage:  # базовый класс PageObject
         else:
             xpath_locator = Locator.to_xpath(locator, text)
         try:
-            element = self.wait.until(EC.visibility_of_element_located((By.XPATH, xpath_locator)))
+            element = self.wait.until(ec.visibility_of_element_located((By.XPATH, xpath_locator)))
             self.logger.info(f'найден элемент с текстом {text}')
             return element
         except TimeoutException:
@@ -170,11 +168,11 @@ class BasePage:  # базовый класс PageObject
         try:
             locator = Locator.is_locator(locator)
             self.is_page_loaded()
-            if len(self.wait.until(EC.visibility_of_all_elements_located(locator.value))) >= quantity:
-                return self.wait.until(EC.visibility_of_all_elements_located(locator.value))
+            if len(self.wait.until(ec.visibility_of_all_elements_located(locator.value))) >= quantity:
+                return self.wait.until(ec.visibility_of_all_elements_located(locator.value))
             else:
                 self.wait_time(3)
-                return self.wait.until(EC.visibility_of_all_elements_located(locator.value))
+                return self.wait.until(ec.visibility_of_all_elements_located(locator.value))
         except TimeoutException:
             self.logger.error(f'Ошибка, элемент не найден {locator.name}={locator.value}')
             raise AssertionError(f'Ошибка, элемент не найден {locator.name}={locator.value}')
@@ -182,7 +180,7 @@ class BasePage:  # базовый класс PageObject
     def is_not_visible(self, locator: [Enum, str]):
         try:
             locator = Locator.is_locator(locator)
-            return self.wait.until(EC.invisibility_of_element(locator.value))
+            return self.wait.until(ec.invisibility_of_element(locator.value))
         except TimeoutException:
             self.logger.error(f'Ошибка, элемент найден и не исчезает {locator.name}={locator.value}')
             raise AssertionError(f'Ошибка, элемент не исчез с экрана {locator.name}={locator.value}')
@@ -221,7 +219,7 @@ class BasePage:  # базовый класс PageObject
         self.logger.info(f'Клик в элемент по счёту {index} с локатором {locator.name}={locator.value}')
         return self
 
-    def fill_element(self, element: WebElement, text):
+    def patch_element(self, element: WebElement, text):
         """Ввод в поле текста, после очистки его """
         element.clear()
         element.send_keys(text)
@@ -232,8 +230,9 @@ class BasePage:  # базовый класс PageObject
         sleep(time)
         return self
 
-    def open_url(self, url):
-        self.browser.get(url)
+    def open_url(self, url: str):
+        with allure.step(f'откроем странцицу по адресу {url}'):
+            self.browser.get(url)
         self.wait.until(lambda driver: self.browser.execute_script('return document.readyState') == 'complete')
         return self
 
@@ -244,7 +243,6 @@ class BasePage:  # базовый класс PageObject
     def back_to_previous_page(self):
         self.browser.back()
         self.wait.until(lambda driver: self.browser.execute_script('return document.readyState') == 'complete')
-        self.is_not_visible(CssBasePage.LOADING_TAG.value)
         return self
 
     def scroll_page_down(self):
@@ -258,12 +256,13 @@ class BasePage:  # базовый класс PageObject
     def scroll_to_element(self, element):
         self.browser.execute_script('arguments[0].scrollIntoView(true);', element)
 
-    def fill_in_fields(self, model_input=None):
+    @staticmethod
+    def fill_in_fields(model_input=None):
         if model_input is not None:
             list_model = dir(model_input)
 
             list_fields = [attribute for attribute in list_model if attribute.endswith('_attribute')]
-
+            
             for field in list_fields:
                 if model_input.__getattribute__(field) is not None:
                     model_input.__getattribute__(field).set_value()

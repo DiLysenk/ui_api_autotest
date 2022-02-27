@@ -13,11 +13,11 @@ class Locator:
         if isinstance(locator, Enum):
             return locator
         elif isinstance(locator, tuple):
-            selector = (By.CSS_SELECTOR, locator[0].value[1] + ' ' + locator[1].value[1])
-            return Enum('NewLocator', [('selector', selector)]).selector
+            new_selector = (By.CSS_SELECTOR, locator[0].value[1] + ' ' + locator[1].value[1])
+            return Enum('NewLocator', [('selector', new_selector)]).selector
         elif isinstance(locator, str):
-            selector = (By.CSS_SELECTOR, locator)
-            return Enum('NewLocator', [('selector', selector)]).selector
+            new_selector = (By.CSS_SELECTOR, locator)
+            return Enum('NewLocator', [('selector', new_selector)]).selector
 
     @staticmethod
     def to_xpath(locator, text):
@@ -29,3 +29,4 @@ class Locator:
         condition = f"[contains(., {GenericTranslator().xpath_literal(text)})]"
 
         return f"{GenericTranslator().css_to_xpath(locator)}{condition}"
+
