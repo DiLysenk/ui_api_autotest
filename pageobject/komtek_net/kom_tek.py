@@ -27,19 +27,15 @@ class KomTekCSS(Enum):
     CHECKBOX_FILTER_MANUFACTOR = (By.CSS_SELECTOR, '')
 
 
-@dataclass
-class ModelInput:
-    search_goods = None
-    pagination = None
-    filter_manufactor = None
-
-
-class KomTekPageObject(BasePage, ModelInput):
+class KomTekPageObject(BasePage):
     url = 'https://komtek.net.ru/'
 
-
-    def __init__(self, browser):
+    def __init__(self, browser, filter_manufactor=None, pagination=None, search_goods=None):
         super().__init__(browser)
+        self.filter_manufactor = filter_manufactor
+        self.pagination = pagination
+        self.search_goods = search_goods
+
         self.search_goods_attribute = SearchBy(self.browser, self.search_goods, KomTekCSS.FIELD_SEARCH,
                                                name="Поиск товара",
                                                input_selector=KomTekCSS.INPUT_SELECTOR,
