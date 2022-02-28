@@ -1,5 +1,6 @@
 import requests
 from enum import Enum
+from logger import Logger
 
 
 class Method(Enum):
@@ -42,13 +43,17 @@ class MyRequests:
         if cookies is None:
             cookies = {}
 
+        Logger.add_request(url, data, headers, cookies, method)
         if method == Method.GET:
-            return requests.get(url, params=data, headers=headers, cookies=cookies)
+            response = requests.get(url, params=data, headers=headers, cookies=cookies)
         elif method == Method.POST:
-            return requests.post(url, data=data, headers=headers, cookies=cookies)
+            response = requests.post(url, data=data, headers=headers, cookies=cookies)
         elif method == Method.PUT:
-            return requests.put(url, data=data, headers=headers, cookies=cookies)
+            response = requests.put(url, data=data, headers=headers, cookies=cookies)
         elif method == Method.PATCH:
-            return requests.patch(url, data=data, headers=headers, cookies=cookies)
+            response = requests.patch(url, data=data, headers=headers, cookies=cookies)
         elif method == Method.DELETE:
-            return requests.delete(url, data=data, headers=headers, cookies=cookies)
+            response = requests.delete(url, data=data, headers=headers, cookies=cookies)
+        Logger.add_response(response)
+
+        return response
