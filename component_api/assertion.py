@@ -4,6 +4,7 @@ from requests import Response
 
 
 class Assertion:
+
     @staticmethod
     def assert_json_value_by_name(response: Response, name, expected_value, error_message):
         response_as_dict = Assertion.assert_json_has_key(response, name)
@@ -19,7 +20,16 @@ class Assertion:
         return response_as_dict
 
     @staticmethod
+    def assert_json_has_keys(response: Response, names: list):
+        try:
+            response_as_dict = response.json()
+        except JSONDecodeError:
+            assert False, f'в запросе отсутствует json {response.text}'
+        for name in names:
+            assert name in response_as_dict, f'Отсутствует ключ {name}'
+
+
+    @staticmethod
     def assert_code_status(response: Response, expected_status_code):
         assert response.status_code == expected_status_code, \
             f'ожидался код {expected_status_code}, фактический код {response.status_code}'
-

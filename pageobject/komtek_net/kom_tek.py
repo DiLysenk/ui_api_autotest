@@ -24,6 +24,7 @@ class KomTekCSS(Enum):
     BTN_FILTER_MANUFACTOR = (By.CSS_SELECTOR, '.new.odd:nth-child(5)')
     CHECKBOX_FILTER_MANUFACTOR = (By.CSS_SELECTOR, '')
 
+
 class KomTekPageObject(BasePage):
     url = 'https://komtek.net.ru/'
 
