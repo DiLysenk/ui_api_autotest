@@ -233,6 +233,7 @@ class BasePage:  # базовый класс PageObject
     def open_url(self, url: str):
         with allure.step(f'откроем странцицу по адресу {url}'):
             self.browser.get(url)
+
         self.wait.until(lambda driver: self.browser.execute_script('return document.readyState') == 'complete')
         return self
 
@@ -259,13 +260,14 @@ class BasePage:  # базовый класс PageObject
     @staticmethod
     def fill_in_fields(model_input=None):
         if model_input is not None:
-            list_model = dir(model_input)
+            dataclass_fields = [field for field in model_input.__dataclass_fields__]
+            for field in dataclass_fields:
+                element = getattr(self, f"{field}")
+                try:
+                    element.set_value(getattr(model_input, field))
+                except:
+                    raise AssertionError(f'не возможно заполнить поле {field}')
 
-            list_fields = [attribute for attribute in list_model if attribute.endswith('_attribute')]
-            
-            for field in list_fields:
-                if model_input.__getattribute__(field) is not None:
-                    model_input.__getattribute__(field).set_value()
 
     def scroll_to(self, element: WebElement, offset_x=0, offset_y=0):
         x = element.location['x'] + offset_x
