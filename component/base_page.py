@@ -262,7 +262,7 @@ class BasePage:  # базовый класс PageObject
         if model_input is not None:
             dataclass_fields = [field for field in model_input.__dataclass_fields__]
             for field in dataclass_fields:
-                element = getattr(self, f"{field}_attribute")
+                element = getattr(self, f"{field}")
                 try:
                     element.set_value(getattr(model_input, field))
                 except:
