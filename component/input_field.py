@@ -4,15 +4,14 @@ from component.locators import Locator
 
 class InputField(BasePage):
 
-    def __init__(self, browser, value, container, input_selector=None):
+    def __init__(self, browser, container, input_selector=None):
         super().__init__(browser)
-        self.value = value
         self.container = container
         self.input_selector = input_selector
 
-    def set_value(self):
-        if self.value is not None:
-            self.fill_input(self.container, self.value)
+    def set_value(self, value):
+        if value is not None:
+            self.fill_input(self.container, value)
 
 
     def _input_field(self):

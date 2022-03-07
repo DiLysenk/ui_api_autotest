@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from dataclasses import dataclass
+
 from selenium.webdriver.common.by import By
 from enum import Enum
 import allure
@@ -25,29 +27,39 @@ class KomTekCSS(Enum):
     CHECKBOX_FILTER_MANUFACTOR = (By.CSS_SELECTOR, '')
 
 
-class KomTekPageObject(BasePage):
+@dataclass
+class KomTekModel:
+    search_goods: [str, int] = None
+    pagination: [str, int] = None
+    filter_manufactor: [str, int] = None
+
+
+class KomTekPageObject(BasePage, KomTekModel):
     url = 'https://komtek.net.ru/'
 
-    def __init__(self, browser,
-                 search_goods=None,
-                 pagination=None,
-                 filter_manufactor=None):
+    def __init__(self, browser
+                 # ,
+                 # search_goods=None,
+                 # pagination=None,
+                 # filter_manufactor=None
+                 ):
         super().__init__(browser)
-        self.search_goods = search_goods
 
-        self.search_goods_attribute = SearchBy(self.browser, search_goods, KomTekCSS.FIELD_SEARCH,
+        # self.pagination = pagination
+        # self.filter_manufactor = filter_manufactor
+        # self.search_goods = search_goods
+        self.search_goods_attribute = SearchBy(self.browser, KomTekCSS.FIELD_SEARCH,
                                                name="Поиск товара",
                                                input_selector=KomTekCSS.INPUT_SELECTOR,
                                                container_menu=KomTekCSS.CONTAINER_SEARCH_MENU,
                                                entity_in_menu=KomTekCSS.ENTITY_IN_SEARCH_MENU)
-        self.pagination = pagination
-        self.pagination_attribute = DropDownMenu(self.browser, pagination, KomTekCSS.FIELD_PAGINATION,
+
+        self.pagination_attribute = DropDownMenu(self.browser, KomTekCSS.FIELD_PAGINATION,
                                                  container_with_entity=KomTekCSS.FIELD_PAGINATION_MENU,
                                                  entity_in_menu=KomTekCSS.ENTITY_IN_PAGINATION_MENU)
 
-        self.filter_manufactor = filter_manufactor
-        self.filter_manufactor_attribute = CheckBox(self.browser, filter_manufactor,
-                                                    KomTekCSS.CHECKBOX_FILTER_MANUFACTOR)
+
+        self.filter_manufactor_attribute = CheckBox(self.browser, KomTekCSS.CHECKBOX_FILTER_MANUFACTOR)
 
     def navigate_to_note_book_table(self):
         self.open_url(self.url)

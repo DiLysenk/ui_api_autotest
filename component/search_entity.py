@@ -5,29 +5,28 @@ import allure
 
 class SearchBy(BasePage):
 
-    def __init__(self, browser, value, container,
+    def __init__(self, browser, container,
                  name=None,
                  input_selector=None,
                  container_menu=None,
                  entity_in_menu=None):
         super().__init__(browser)
-        self.value = value
         self.container = container  # контейнер с полем
         self.input_selector = input_selector
         self.container_menu = container_menu  # контейнер с вариантами
         self.name = name  # Название поля
         self.entity_in_menu = entity_in_menu
 
-    def set_value(self):
-        if self.value is not None:
+    def set_value(self, value):
+        if value is not None:
             self._name()
             self._entity_in_menu()
-            with allure.step(f'заполним поле {self._name()} значением {self.value}'):
-                self.fill_input(self._input_field(), self.value)
+            with allure.step(f'заполним поле {self._name()} значением {value}'):
+                self.fill_input(self._input_field(), value)
             self.find_visible(self._container_menu())
             menu = self.are_visible(locator=(self._container_menu(), self._entity_in_menu()))
             for element in menu:
-                if self.value in element.text:
+                if value in element.text:
                     self.click_element(element)
                     return self
             else:

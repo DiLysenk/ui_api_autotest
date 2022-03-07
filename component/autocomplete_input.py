@@ -7,28 +7,27 @@ import allure
 
 class AutoCompleteInput(BasePage):
 
-    def __init__(self, browser, value, container,
+    def __init__(self, browser, container,
                  name=None,
                  input_selector=None,
                  container_menu=None,
                  entity_in_menu=None):
         super().__init__(browser)
-        self.value = value
         self.container = container  # контейнер с полем
         self.container_menu = container_menu  # контейнер с вариантами
         self.name = name  # Название поля
         self.entity_in_menu = entity_in_menu
         self.input_selector = input_selector
 
-    def set_value(self):
-        if self.value is not None:
-            with allure.step(f'заполним поле {self._name()} значением {self.value}'):
-                self.fill_input(self._input_field(), self.value)
+    def set_value(self, value):
+        if value is not None:
+            with allure.step(f'заполним поле {self._name()} значением {value}'):
+                self.fill_input(self._input_field(), value)
             self.find_visible(self._container_menu())
             menu = self.are_visible(locator=(self.container_menu, self.entity_in_menu))
             for element in menu:
                 text_element = element.text
-                if self.value == text_element:
+                if value == text_element:
                     self.click_element(element)
                     return self
             else:
