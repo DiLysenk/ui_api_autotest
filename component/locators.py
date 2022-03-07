@@ -29,3 +29,4 @@ class Locator:
         condition = f"[contains(., {GenericTranslator().xpath_literal(text)})]"
 
         return f"{GenericTranslator().css_to_xpath(locator)}{condition}"
+

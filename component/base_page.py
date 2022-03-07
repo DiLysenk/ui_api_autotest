@@ -260,14 +260,13 @@ class BasePage:  # базовый класс PageObject
 
     def fill_in_fields(self, model_input=None):
         if model_input is not None:
-
             dataclass_fields = [field for field in model_input.__dataclass_fields__]
-
             for field in dataclass_fields:
                 element = getattr(self, f"{field}_attribute")
-                element.set_value(getattr(model_input, field))
-
-
+                try:
+                    element.set_value(getattr(model_input, field))
+                except:
+                    raise AssertionError(f'не возможно заполнить поле {field}')
 
     def scroll_to(self, element, offset_x=0, offset_y=0):
         x = element.location['x'] + offset_x

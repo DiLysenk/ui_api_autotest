@@ -37,17 +37,9 @@ class KomTekModel:
 class KomTekPageObject(BasePage, KomTekModel):
     url = 'https://komtek.net.ru/'
 
-    def __init__(self, browser
-                 # ,
-                 # search_goods=None,
-                 # pagination=None,
-                 # filter_manufactor=None
-                 ):
+    def __init__(self, browser):
         super().__init__(browser)
 
-        # self.pagination = pagination
-        # self.filter_manufactor = filter_manufactor
-        # self.search_goods = search_goods
         self.search_goods_attribute = SearchBy(self.browser, KomTekCSS.FIELD_SEARCH,
                                                name="Поиск товара",
                                                input_selector=KomTekCSS.INPUT_SELECTOR,
@@ -57,7 +49,6 @@ class KomTekPageObject(BasePage, KomTekModel):
         self.pagination_attribute = DropDownMenu(self.browser, KomTekCSS.FIELD_PAGINATION,
                                                  container_with_entity=KomTekCSS.FIELD_PAGINATION_MENU,
                                                  entity_in_menu=KomTekCSS.ENTITY_IN_PAGINATION_MENU)
-
 
         self.filter_manufactor_attribute = CheckBox(self.browser, KomTekCSS.CHECKBOX_FILTER_MANUFACTOR)
 
