@@ -41,14 +41,14 @@ class KomTekPageObject(BasePage):
         super().__init__(browser)
 
         self.search_goods = SearchBy(self.browser, KomTekCSS.FIELD_SEARCH,
-                                               name="Поиск товара",
-                                               input_selector=KomTekCSS.INPUT_SELECTOR,
-                                               container_menu=KomTekCSS.CONTAINER_SEARCH_MENU,
-                                               entity_in_menu=KomTekCSS.ENTITY_IN_SEARCH_MENU)
+                                     name="Поиск товара",
+                                     input_selector=KomTekCSS.INPUT_SELECTOR,
+                                     container_menu=KomTekCSS.CONTAINER_SEARCH_MENU,
+                                     entity_in_menu=KomTekCSS.ENTITY_IN_SEARCH_MENU)
 
         self.pagination = DropDownMenu(self.browser, KomTekCSS.FIELD_PAGINATION,
-                                                 container_with_entity=KomTekCSS.FIELD_PAGINATION_MENU,
-                                                 entity_in_menu=KomTekCSS.ENTITY_IN_PAGINATION_MENU)
+                                       container_with_entity=KomTekCSS.FIELD_PAGINATION_MENU,
+                                       entity_in_menu=KomTekCSS.ENTITY_IN_PAGINATION_MENU)
 
         self.filter_manufactor = CheckBox(self.browser, KomTekCSS.CHECKBOX_FILTER_MANUFACTOR)
 

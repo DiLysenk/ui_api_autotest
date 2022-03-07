@@ -9,5 +9,4 @@ class CheckBox(BasePage):
 
     def set_value(self, value):
         if value is not None:
-
             self.click_locator(self.container)

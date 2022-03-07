@@ -15,5 +15,4 @@ class TestKomTek:
         model = KomTekModel(pagination='50')
         main_page.navigate_to_note_book_table()
         main_page.fill_in_fields(model)
-
         assert len(main_page.are_visible('li.item', quantity=50)) == 50
