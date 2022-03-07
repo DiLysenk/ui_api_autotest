@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 from dataclasses import dataclass
-
 from selenium.webdriver.common.by import By
 from enum import Enum
 import allure
-
+from dataclasses import dataclass
 from component.autocomplete_input import AutoCompleteInput
 from component.search_entity import SearchBy
 from component.input_field import InputField
@@ -14,6 +13,7 @@ from component.checkbox import CheckBox
 
 
 class KomTekCSS(Enum):
+    CONTAINER_W_NAVIGATION = (By.CSS_SELECTOR, '.inner-container ')
     FIELD_SEARCH = (By.CSS_SELECTOR, '#search-wrapper-regular')
     INPUT_SELECTOR = (By.CSS_SELECTOR, '.input-text')
     CONTAINER_SEARCH_MENU = (By.CSS_SELECTOR, '.searchautocomplete-placeholder')
@@ -25,6 +25,7 @@ class KomTekCSS(Enum):
 
     BTN_FILTER_MANUFACTOR = (By.CSS_SELECTOR, '.new.odd:nth-child(5)')
     CHECKBOX_FILTER_MANUFACTOR = (By.CSS_SELECTOR, '')
+
 
 
 @dataclass
@@ -52,6 +53,16 @@ class KomTekPageObject(BasePage):
 
         self.filter_manufactor = CheckBox(self.browser, KomTekCSS.CHECKBOX_FILTER_MANUFACTOR)
 
+
     def navigate_to_note_book_table(self):
         self.open_url(self.url)
-        self.click_locator(KomTekCSS.BTN_NOTEBOOKS)
+        with allure.step('откроем экран с ноутбуками'):
+            self.click_locator(KomTekCSS.BTN_NOTEBOOKS)
+        assert 'noutbuki' in self.browser.current_url
+
+    def navigate_to_computer(self):
+        self.open_url(self.url)
+        with allure.step('откроем экран с сборкой компьютера'):
+            self.find_by_text('Собрать компьютер', locator=KomTekCSS.CONTAINER_W_NAVIGATION).click()
+        assert 'pc_configurator' in self.browser.current_url
+
