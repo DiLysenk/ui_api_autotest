@@ -6,6 +6,7 @@ from helper import create_dir_logs
 import requests
 from helper import wait_start_server
 from config import settings
+from component_api.my_requests import MyRequests
 create_dir_logs()
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filemode='w',
@@ -97,4 +98,4 @@ def get_end_point(request):
 
 @pytest.fixture
 def response_get(end_point):
-    return requests.get(end_point)
+    return MyRequests.request_get(end_point)

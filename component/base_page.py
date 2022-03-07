@@ -233,7 +233,7 @@ class BasePage:  # базовый класс PageObject
         return self
 
     def open_url(self, url):
-        self.browser.get(url)
+        self.browser.request_get(url)
         self.wait.until(lambda driver: self.browser.execute_script('return document.readyState') == 'complete')
         return self
 

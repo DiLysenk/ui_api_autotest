@@ -1,6 +1,6 @@
 import requests
 from enum import Enum
-from logger import Logger
+from component_api.logger import Logger
 
 
 class Method(Enum):
@@ -14,28 +14,28 @@ class Method(Enum):
 class MyRequests:
 
     @staticmethod
-    def get(url, params: dict = None, headers: dict = None, cookies: dict = None):
+    def request_get(url, params: dict = None, headers: dict = None, cookies: dict = None):
         return MyRequests._send(url, params, headers, cookies, Method.GET)
 
     @staticmethod
-    def post(url, data: dict = None, headers: dict = None, cookies: dict = None):
+    def request_post(url, data: dict = None, headers: dict = None, cookies: dict = None):
         return MyRequests._send(url, data, headers, cookies, Method.POST)
 
     @staticmethod
-    def put(url, data: dict = None, headers: dict = None, cookies: dict = None):
+    def request_put(url, data: dict = None, headers: dict = None, cookies: dict = None):
         return MyRequests._send(url, data, headers, cookies, Method.PUT)
 
     @staticmethod
-    def patch(url, data: dict = None, headers: dict = None, cookies: dict = None):
+    def request_patch(url, data: dict = None, headers: dict = None, cookies: dict = None):
         return MyRequests._send(url, data, headers, cookies, Method.PATCH)
 
     @staticmethod
-    def delete(url, data: dict = None, headers: dict = None, cookies: dict = None):
+    def request_delete(url, data: dict = None, headers: dict = None, cookies: dict = None):
         return MyRequests._send(url, data, headers, cookies, Method.DELETE)
 
     @staticmethod
     def _send(url: str, data: dict, headers: dict, cookies: dict, method):
-        url = f"http://{url}"
+        url = f"{url}"
 
         if headers is None:
             headers = {}
