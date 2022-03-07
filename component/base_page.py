@@ -260,16 +260,6 @@ class BasePage:  # базовый класс PageObject
 
     def fill_in_fields(self, model_input=None):
         if model_input is not None:
-            list_model = dir(model_input)
-
-            list_fields = [attribute for attribute in list_model if attribute.endswith('_attribute')]
-
-            for field in list_fields:
-                if model_input.__getattribute__(field) is not None:
-                    model_input.__getattribute__(field).set_value()
-
-    def fill_in_fields2(self, model_input=None):
-        if model_input is not None:
 
             dataclass_fields = [field for field in model_input.__dataclass_fields__]
 
