@@ -257,8 +257,8 @@ class BasePage:  # базовый класс PageObject
     def scroll_to_element(self, element):
         self.browser.execute_script('arguments[0].scrollIntoView(true);', element)
 
-    @staticmethod
-    def fill_in_fields(model_input=None):
+
+    def fill_in_fields(self, model_input=None):
         if model_input is not None:
             dataclass_fields = [field for field in model_input.__dataclass_fields__]
             for field in dataclass_fields:
